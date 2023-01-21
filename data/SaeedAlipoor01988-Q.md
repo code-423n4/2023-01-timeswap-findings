@@ -8,8 +8,9 @@ The same is found here:
 https://github.com/code-423n4/2022-01-trader-joe-findings/issues/263
 https://github.com/code-423n4/2022-01-sandclock-findings/issues/107
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
-Missing same address check validation
+Missing same address check
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L75
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L152
 
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
 
