@@ -1,0 +1,2 @@
+The reentrancy guards raiseGuard and lowerGuard on TimeswapV2Pool contract that are used to prevent reentrancy attacks consumes more gas than the regular lockup method, plus it was proven that it can be bypassed (submitted other report)
+it's better to use the basic nonreentrant modifier from openzeppelin as it consumes less gas and works perfectly
