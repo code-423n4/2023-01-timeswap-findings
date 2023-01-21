@@ -15,9 +15,27 @@ https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
 
 in TimeswapV2PoolFactory contract and function create, you are returning one error for two separate subjects. 
-in the first line, if the input address is zero address, the function will return Error.zeroAddress();
+in the first line, if the input address is zero address, the function will return an Error.zeroAddress();
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2PoolFactory.sol#L60
 
 but in the next line, we get pair from pairs mapping, and if the pair is zero address again function will return Error.zeroAddress();
 
 but in this line, I think we should return this error, Error.pairalreadyexist();
+
+////////////////////////////////////////////// ***** //////////////////////////////////////////////
+
+in transferLiquidity function,
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L152
+
+user A wants to transfer liquidityAmount from his balance to user B's balance. but we don't check at top of the function body that, user A has enough liquidity and directly we call 
+
+pools[strike][maturity].transferLiquidity(to, liquidityAmount, blockTimestamp(0));
+
+but we can manage this scenario more easily,
+
+liquidityAmountToTransfer = 
+liquidityAmount > pools[strike][maturity].liquidityPositions[msg.sender].liquidity ? pools[strike][maturity].liquidityPositions[msg.sender].liquidity : liquidityAmount ;
+
+and use liquidityAmountToTransfer in burn and mint, instead of using the user's input liquidityAmount .
+
+////////////////////////////////////////////// ***** //////////////////////////////////////////////
