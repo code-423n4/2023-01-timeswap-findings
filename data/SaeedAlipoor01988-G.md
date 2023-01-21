@@ -82,6 +82,3 @@ we use the factory contract to create pool contracts with the help of the Timesw
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2PoolDeployer.sol#L28
 
 why don't use Clones and then initialize contract parameters at the new transaction? 
-
-or if this is not optimized! why at the end of pool creation, similarly to the UniswapV3PoolDeployer, we don't delete parameters? 
-https://github.com/Uniswap/v3-core/blob/05c10bf6d547d6121622ac51c457f93775e1df09/contracts/UniswapV3PoolDeployer.sol#L36
