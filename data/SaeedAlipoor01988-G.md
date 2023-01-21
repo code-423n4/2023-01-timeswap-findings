@@ -46,11 +46,7 @@ function _updateFeesPositions(address from, address to, TimeswapV2LiquidityToken
 
 and pass position directly from the transferFeesFrom to updateFeesPositions! to prevent reading from storage again! When we have value.
 
-and pass _timeswapV2LiquidityTokenPositions[id] to the updateFeesPositions, from the collect function.
-
-_updateFeesPositions(msg.sender, address(0), _timeswapV2LiquidityTokenPositions[id]);
-
-or compute timeswapV2LiquidityTokenPosition and pass it.
+and compute and pass timeswapV2LiquidityTokenPosition to the updateFeesPositions, from the collect function.
 
         TimeswapV2LiquidityTokenPosition memory timeswapV2LiquidityTokenPosition = TimeswapV2LiquidityTokenPosition({
             token0: param.token0,
