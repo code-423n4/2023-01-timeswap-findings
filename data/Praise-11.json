@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Praise",
+  "risk": "2",
+  "title": "Contradictory if statement in function initialise() in TimeswapV2Pool.sol",
+  "issueId": 11,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/11"
+}
