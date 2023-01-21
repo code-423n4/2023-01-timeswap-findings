@@ -1,0 +1,12 @@
+Missing validation in constructors
+TimeswapV2Token misses zero-address validation on the address of the chosenOptionFactory set in the constructor.
+There is no other function to change the address of chosenOptionFactory in the TimeswapV2Token contract.
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2Token.sol#L42
+
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L36
+The same is found here:
+https://github.com/code-423n4/2022-01-trader-joe-findings/issues/263
+https://github.com/code-423n4/2022-01-sandclock-findings/issues/107
+////////////////////////////////////////////// ***** //////////////////////////////////////////////
+Missing same address check validation
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L75
