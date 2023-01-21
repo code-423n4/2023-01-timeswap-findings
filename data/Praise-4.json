@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Praise",
+  "risk": "2",
+  "title": "wrong If statement in TimeswapV2PoolFactory.sol",
+  "issueId": 4,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/4"
+}
