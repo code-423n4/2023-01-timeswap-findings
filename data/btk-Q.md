@@ -21,6 +21,10 @@
 | [NC-07] | Solidity compiler optimizations can be problematic               | 3             |
 | [NC-08] | Add a timelock to critical functions                             | 1             |
 | [NC-09] | Lines are too long                                               | 30            |
+| [NC-10] | Missing natspec                                                  | All Contracts |
+| [NC-11] | Generate perfect code headers every time                         | All Contracts |
+| [NC-12] | For functions, follow Solidity standard naming conventions       | All Contracts |
+| [NC-13] | `Address(0)` checks                                              | 3             |
 
 ## [L-01] Low level calls with solidity version 0.8.14 and lower can result in optimiser bug
 
@@ -281,6 +285,20 @@ Short term, measure the gas savings from optimizations and carefully weigh them 
 
 It is a good practice to give time for users to react and adjust to critical changes. A timelock provides more guarantees and reduces the level of trust required, thus decreasing risk for users. It also indicates that the project is legitimate.
 
+```solidity
+    /// @inheritdoc IOwnableTwoSteps
+    function setPendingOwner(address chosenPendingOwner) external override {
+        Ownership.checkIfOwner(owner);
+
+        if (chosenPendingOwner == address(0)) Error.zeroAddress();
+        chosenPendingOwner.checkIfAlreadyOwner(owner);
+
+        pendingOwner = chosenPendingOwner;
+
+        emit SetOwner(pendingOwner);
+    }
+```
+
 ### Lines of code
 
 - [OwnableTwoSteps.sol:23](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/base/OwnableTwoSteps.sol#L23)
@@ -327,3 +345,76 @@ Usually lines in source code are limited to 80 characters. Today's screens are m
 - [FeesPosition.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/structs/FeesPosition.sol)
 - [TimeswapV2LiquidityToken.so](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol)
 - [TimeswapV2Token.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol)
+
+## [NC-10] Missing natspec
+
+It is recommended that Solidity contracts are fully annotated using NatSpec, it is clearly stated in the Solidity official documentation.
+
+- In complex projects such as Defi, the interpretation of all functions and their arguments and returns is important for code readability and auditability.
+
+- Some code analysis programs do analysis by reading NatSpec details, if they can't see the tags `(@param, @dev, @return)`, they do incomplete analysis.
+
+### Lines of code
+
+- **All Contracts**
+
+### Recommended Mitigation Steps 
+
+Include [`NatSpec`](https://docs.soliditylang.org/en/v0.8.15/natspec-format.html) comments in the codebase.
+
+## [NC-11] Generate perfect code headers every time
+
+I recommend using header for Solidity code layout and readability
+
+> Ref: https://github.com/transmissions11/headers
+
+### Lines of code 
+
+- **All Contracts**
+
+### Recommended Mitigation Steps
+
+```
+/*//////////////////////////////////////////////////////////////
+                           TESTING 123
+//////////////////////////////////////////////////////////////*/
+```
+
+## [NC-12] For functions, follow Solidity standard naming conventions 
+
+The protocol don't follow solidity standard naming convention.
+
+> Ref: https://docs.soliditylang.org/en/v0.8.17/style-guide.html#naming-conventions
+
+### Lines of code 
+
+- **All Contracts**
+
+### Recommended Mitigation Steps
+
+Follow solidity standard naming convention.
+
+## [NC-13] `Address(0)` checks  
+
+Check of `address(0)` to protect the code from `(0x0000000000000000000000000000000000000000)` address problem just in case. This is best practice or instead of suggesting that they verify `_address != address(0)`, you could add some good NatSpec comments explaining what is valid and what is invalid and what are the implications of accidentally using an invalid address.
+
+```solidity
+    constructor(address chosenOwner) {
+        owner = chosenOwner;
+    }
+```
+
+### Lines of code 
+
+- [OwnableTwoSteps.sol:18-20](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/base/OwnableTwoSteps.sol#L18-L20)
+- [TimeswapV2LiquidityToken.sol:36-39](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L36-L39)
+- [TimeswapV2Token.sol:41-43](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L41-L43)
+
+### Recommended Mitigation Steps
+
+```solidity
+    constructor(address chosenOwner) {
+        if (chosenOwner == address(0)) revert();
+        owner = chosenOwner;
+    }
+```
