@@ -1,4 +1,4 @@
-# GAS OPTIMIZATION REPORT
+# QA REPORT
 
 ---
 
@@ -13,11 +13,10 @@
 
 *Total: 113 Instances over 3 issues.*
 
-*Note: The issues already identified in the c4dit report that are shown above refer to different instances.*
 
 ---
 
-### Low risk issues
+### Low and Non Critical risk issues
 
 ### <a id=G13>[L-1]</a> Use of `block.timestamp`
 
