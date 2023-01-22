@@ -42,3 +42,9 @@ same for :
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L165
 
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
+
+Omissions in Events with old value
+Throughout the codebase, events are generally emitted when sensitive changes are made to the contracts. However, some events are missing important parameters
+
+The events should include the new value and old value where possible:
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/base/OwnableTwoSteps.sol#L41
