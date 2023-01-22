@@ -88,3 +88,8 @@ but before calling this function, we need to check that caller has enough balanc
 
 for example in :
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-option/src/TimeswapV2Option.sol#L97
+
+by checking the balance of msg.sender in the function
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-option/src/TimeswapV2Option.sol#L97
+
+before making the call to transferPosition function, we can add unchecked in to transferPosition function.
