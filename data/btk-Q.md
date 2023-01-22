@@ -10,21 +10,26 @@
 
 ### Total Non-Critical issues
 
-| Number  | Issues Details                                                   | Context       |
-|---------|------------------------------------------------------------------|---------------|
-| [NC-01] | Lock pragmas to specific compiler version                        | 8             |
-| [NC-02] | Constants in comparisons should appear on the left side          | All Contracts |
-| [NC-03] | Use a more recent version of solidity                            | All Contracts |
-| [NC-04] | Include `@return` parameters in NatSpec comments                 | All Contracts |
-| [NC-05] | Contracts should have full test coverage                         | All Contracts |
-| [NC-06] | Function writing does not comply with the `Solidity Style Guide` | All Contracts |
-| [NC-07] | Solidity compiler optimizations can be problematic               | 3             |
-| [NC-08] | Add a timelock to critical functions                             | 1             |
-| [NC-09] | Lines are too long                                               | 30            |
-| [NC-10] | Missing natspec                                                  | All Contracts |
-| [NC-11] | Generate perfect code headers every time                         | All Contracts |
-| [NC-12] | For functions, follow Solidity standard naming conventions       | All Contracts |
-| [NC-13] | `Address(0)` checks                                              | 3             |
+| Number  | Issues Details                                                                            | Context       |
+|---------|-------------------------------------------------------------------------------------------|---------------|
+| [NC-01] | Lock pragmas to specific compiler version                                                 | 8             |
+| [NC-02] | Constants in comparisons should appear on the left side                                   | All Contracts |
+| [NC-03] | Use a more recent version of solidity                                                     | All Contracts |
+| [NC-04] | Include `@return` parameters in NatSpec comments                                          | All Contracts |
+| [NC-05] | Contracts should have full test coverage                                                  | All Contracts |
+| [NC-06] | Function writing does not comply with the `Solidity Style Guide`                          | All Contracts |
+| [NC-07] | Solidity compiler optimizations can be problematic                                        | 3             |
+| [NC-08] | Add a timelock to critical functions                                                      | 1             |
+| [NC-09] | Lines are too long                                                                        | 30            |
+| [NC-10] | NatSpec comments should be increased in contracts                                         | All Contracts |
+| [NC-11] | Generate perfect code headers every time                                                  | All Contracts |
+| [NC-12] | For functions, follow Solidity standard naming conventions                                | All Contracts |
+| [NC-13] | `Address(0)` checks                                                                       | 3             |
+| [NC-14] | Use a more recent version of solidity                                                     | All Contracts |
+| [NC-15] | Assembly Codes Specific – Should Have Comments                                            | 5             |
+| [NC-16] | Events that mark critical parameter changes should contain both the old and the new value | 1             |
+| [NC-17] | Consider using `delete` rather than assigning zero to clear values                        | 10            |
+| [NC-18] | Add NatSpec Mapping comment                                                               | 10            |
 
 ## [L-01] Low level calls with solidity version 0.8.14 and lower can result in optimiser bug
 
@@ -346,7 +351,7 @@ Usually lines in source code are limited to 80 characters. Today's screens are m
 - [TimeswapV2LiquidityToken.so](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol)
 - [TimeswapV2Token.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol)
 
-## [NC-10] Missing natspec
+## [NC-10] NatSpec comments should be increased in contracts   
 
 It is recommended that Solidity contracts are fully annotated using NatSpec, it is clearly stated in the Solidity official documentation.
 
@@ -418,3 +423,117 @@ Check of `address(0)` to protect the code from `(0x00000000000000000000000000000
         owner = chosenOwner;
     }
 ```
+
+## [NC-14] Use a more recent version of solidity  
+
+For security, it is best practice to use the latest Solidity version.
+
+> https://github.com/ethereum/solidity/blob/develop/Changelog.md
+
+### Lines of code 
+
+- **All Contracts**
+
+### Recommended Mitigation Steps
+
+Old version of Solidity is used `(0.8.8)`, newer version can be used `(0.8.17)`
+
+## [NC-15] Assembly Codes Specific – Should Have Comments     
+
+Since this is a low level language that is more difficult to parse by readers, include extensive documentation, comments on the rationale behind its use, clearly explaining what each assembly instruction does
+
+This will make it easier for users to trust the code, for reviewers to validate the code, and for developers to build on or update the code.
+
+Note that using Aseembly removes several important security features of Solidity, which can make the code more insecure and more error-prone.
+
+### Lines of code
+
+- [FullMath.sol:47](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/FullMath.sol#L47)
+- [FullMath.sol:63](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/FullMath.sol#L63)
+- [FullMath.sol:78](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/FullMath.sol#L78)
+- [FullMath.sol:92](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/FullMath.sol#L92)
+- [FullMath.sol:103](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/FullMath.sol#L103)
+
+### Recommended Mitigation Steps
+
+Include NatSpec in assembly codes.
+
+## [NC-16] Events that mark critical parameter changes should contain both the old and the new value
+
+```solidity
+    event AcceptOwner(address owner);
+```
+
+```solidity
+    function acceptOwner() external override {
+        msg.sender.checkIfPendingOwner(pendingOwner);
+
+        owner = msg.sender;
+        delete pendingOwner;
+
+        emit AcceptOwner(msg.sender);
+    }
+```
+
+### Lines of code 
+
+- [OwnableTwoSteps.sol:35-42](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/base/OwnableTwoSteps.sol#L35-L42)
+- [IOwnableTwoSteps.sol:11](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/IOwnableTwoSteps.sol#L11)
+
+### Recommended Mitigation Steps
+
+```solidity
+    event AcceptOwner(address previousOwner, address newOwner);
+```
+
+```solidity
+    function acceptOwner() external override {
+        msg.sender.checkIfPendingOwner(pendingOwner);
+
+        owner = msg.sender;
+        delete pendingOwner;
+
+        emit AcceptOwner(owner, msg.sender);
+    }
+```
+
+## [NC-17] Consider using `delete` rather than assigning zero to clear values
+
+The `delete` keyword more closely matches the semantics of what is being done, and draws more attention to the changing of state, which may lead to a more thorough audit of its associated logic
+
+### Lines of code 
+
+- [LiquidityPosition.sol:93](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/LiquidityPosition.sol#L93)
+- [LiquidityPosition.sol:101](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/LiquidityPosition.sol#L101)
+- [LiquidityPosition.sol:109](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/LiquidityPosition.sol#L109)
+- [Pool.sol:228](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L228)
+- [Pool.sol:236](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L236)
+- [Pool.sol:244](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L244)
+- [Pool.sol:633](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L633)
+- [Pool.sol:646](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L646)
+- [Pool.sol:685](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L685)
+- [Pool.sol:706](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L706)
+
+### Recommended Mitigation Steps
+
+Use the `delete` keyword.
+
+## [NC-18] Add NatSpec Mapping comment     
+
+Add NatSpec comments describing mapping keys and values
+
+### Lines of code 
+
+- [TimeswapV2Option.sol:53](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2Option.sol#L53)
+- [TimeswapV2OptionFactory.sol:22](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L22)
+- [TimeswapV2Pool.sol:52](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L52)
+- [TimeswapV2Pool.sol:53](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L53)
+- [TimeswapV2PoolFactory.sol:31](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2PoolFactory.sol#L31)
+- [TimeswapV2LiquidityToken.sol:41](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L41)
+- [TimeswapV2LiquidityToken.sol:43](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L43)
+- [TimeswapV2LiquidityToken.sol:45](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L45)
+- [TimeswapV2LiquidityToken.sol:47](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L47)
+- [TimeswapV2Token.sol:36](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L36)
+- [TimeswapV2Token.sol:38](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L38)
+- [TimeswapV2Token.sol:39](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L39)
+- [ERC1155Enumerable.sol:22](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/base/ERC1155Enumerable.sol#L22)
