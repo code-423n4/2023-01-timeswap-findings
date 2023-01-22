@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "2",
+  "title": "Gas Guzzling Mapping of Mappings, High Gas Usage Vulnerability in \"TimeswapV2Option\" Contract",
+  "issueId": 64,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/64"
+}
