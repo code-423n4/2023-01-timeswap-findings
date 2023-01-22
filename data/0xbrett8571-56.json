@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "3",
+  "title": "Unauthorized Execution of Create Function in TimeswapV2PoolFactory Contract",
+  "issueId": 56,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/56"
+}
