@@ -68,23 +68,6 @@ And in _beforeTokenTransfer,  pass _timeswapV2LiquidityTokenPositions[id] in for
 
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
 
-Clones for cheap contract deployment
-There’s a way to save a significant amount of gas on deployment using Clones: https://www.youtube.com/watch?v=3Mw-pMmJ7TA .
-With the standard way using the new keyword, each contract created contains the entire logic. Using proxies allow only the first implementation to contain the logic, saving deployment costs on subsequent instances deployed.
-Cheap Contract Deployment Through Clones
-There’s a way to save a significant amount of gas on deployment using Clones: https://www.youtube.com/watch?v=3Mw-pMmJ7TA .
-This is a solution that was adopted, as an example, by Porter Finance. They realized that deploying using clones was 10x cheaper:
-https://github.com/porter-finance/v1-core/issues/15#issuecomment-1035639516
-https://github.com/porter-finance/v1-core/pull/34
-Consider applying a similar pattern.
-
-we use the factory contract to create pool contracts with the help of the TimeswapV2PoolDeployer  contract and deploy function. in the deploy function, we use a new keyword to deploy new pools.
-https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2PoolDeployer.sol#L28
-
-why don't use Clones and then initialize contract parameters at the new transaction? 
-
-////////////////////////////////////////////// ***** //////////////////////////////////////////////
-
 use x = x + y, instead of x += y;
 
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/LiquidityPosition.sol#L51
