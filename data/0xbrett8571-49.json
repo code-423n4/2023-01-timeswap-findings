@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "3",
+  "title": "\"NoDelegateCall\" Library Not Checking for `msg.sender` or `msg.data` Modification Vulnerability.",
+  "issueId": 49,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/49"
+}
