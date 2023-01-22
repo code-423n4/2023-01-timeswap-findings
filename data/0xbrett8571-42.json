@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "3",
+  "title": "Lack of Reentrancy protection in deploy function. `TimeswapV2PoolDeployer`",
+  "issueId": 42,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/42"
+}
