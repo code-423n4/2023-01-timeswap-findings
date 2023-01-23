@@ -26,6 +26,7 @@ Note: The following correction represents only one of the numerous contract inst
 [File: ITimeswapV2PoolLeverageCallback.sol#L10](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/callbacks/ITimeswapV2PoolLeverageCallback.sol#L10)
 [File: ITimeswapV2PoolMintCallback.sol#L10](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/callbacks/ITimeswapV2PoolMintCallback.sol#L10)
 [File: ITimeswapV2PoolDeleverageCallback.sol#L10](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/callbacks/ITimeswapV2PoolDeleverageCallback.sol#L10)
+[File: Param.sol#L11-L13](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L11-L13)
 
 ```diff
 -    /// @dev The long0 positions or long1 positions will already be minted to the receipient.
@@ -36,6 +37,14 @@ Note: The following correction represents only one of the numerous contract inst
 ```diff
 - /// @dev contract for ownable implementation with a safety two step owner transfership.
 + /// @dev contract for ownable implementation with a safety two step ownership transfer.
+```
+[File: PoolFactory.sol#L41-L42](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/PoolFactory.sol#L41-L42)
+
+```diff
+-    /// @return optionPair The retreived option pair address.
+-    /// @return poolPair The retreived pool pair address.
++    /// @return optionPair The retrieved option pair address.
++    /// @return poolPair The retrieved pool pair address.
 ```
 ## Minimization of truncation
 The number of divisions in an equation should be reduced to minimize truncation frequency, serving to achieve higher precision. And, where deemed fit, comment the code line with the original multiple division arithmetic operation for clarity reason.
@@ -81,3 +90,28 @@ Note: The suggested error may have to be added/implemented in [Error.sol](https:
         emit Create(msg.sender, optionPair, pair);
     }
 ```
+## Solidity's Style Guide on contract layout
+According to Solidity's Style Guide below:
+
+https://docs.soliditylang.org/en/v0.8.17/style-guide.html
+
+In order to help readers identify which functions they can call, and find the constructor and fallback definitions more easily, functions should be grouped according to their visibility and ordered in the following manner:
+
+constructor, receive function (if exists), fallback function (if exists), external, public, internal, private
+
+And, within a grouping, place the view and pure functions last.
+
+Additionally, inside each contract, library or interface, use the following order:
+
+type declarations, state variables, events, modifiers, functions
+
+Consider adhering to the above guidelines for all contract instances entailed.
+ 
+## Inadequate NatSpec
+Solidity contracts can use a special form of comments, i.e., the Ethereum Natural Language Specification Format (NatSpec) to provide rich documentation for functions, return variables and more. Please visit the following link for further details:
+
+https://docs.soliditylang.org/en/v0.8.16/natspec-format.html
+
+For instance, it will be of added values to the users and developers if:
+- `@ return` is also provided on the functions of [ConstantSum.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantSum.sol).
+- at least a minimalist NatSpec is provided on [FeesPosition.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/structs/FeesPosition.sol).
