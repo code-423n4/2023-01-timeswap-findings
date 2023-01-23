@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "2",
+  "title": "Unverified Contract Deployment Vulnerability in 'Deploy' Function in TimeswapV2PoolFactory.sol",
+  "issueId": 79,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/79"
+}
