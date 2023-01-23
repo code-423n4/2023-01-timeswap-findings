@@ -46,6 +46,12 @@ Note: The following correction represents only one of the numerous contract inst
 +    /// @return optionPair The retrieved option pair address.
 +    /// @return poolPair The retrieved pool pair address.
 ```
+[File: ReentrancyGuard.sol#L11](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ReentrancyGuard.sol#L11)
+
+```diff
+-    /// @dev The initial state which must be change to NOT_ENTERED when first interacting.
++    /// @dev The initial state which must be changed to NOT_ENTERED when first interacting.
+```
 ## Minimization of truncation
 The number of divisions in an equation should be reduced to minimize truncation frequency, serving to achieve higher precision. And, where deemed fit, comment the code line with the original multiple division arithmetic operation for clarity reason.
 
@@ -115,3 +121,8 @@ https://docs.soliditylang.org/en/v0.8.16/natspec-format.html
 For instance, it will be of added values to the users and developers if:
 - `@ return` is also provided on the functions of [ConstantSum.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantSum.sol).
 - at least a minimalist NatSpec is provided on [FeesPosition.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/structs/FeesPosition.sol).
+
+## Inappropriate comment
+The return code line in the function below entails only a simple addition that is devoid of division. The comment, `truncation is desired` is therefore deemed non-matching. Consider removing/editing the comment where possible:
+
+[File: TimeswapV2Pool.sol#L82-L84](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L82-L84) 
