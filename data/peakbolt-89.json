@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "peakbolt",
+  "risk": "3",
+  "title": "Important changes to state are made after external calls in swap()",
+  "issueId": 89,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/89"
+}
