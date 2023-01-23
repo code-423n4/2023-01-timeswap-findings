@@ -48,3 +48,17 @@ Throughout the codebase, events are generally emitted when sensitive changes are
 
 The events should include the new value and old value where possible:
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/base/OwnableTwoSteps.sol#L41
+
+////////////////////////////////////////////// ***** //////////////////////////////////////////////
+in transferLiquidity function,
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L153
+
+at the first line, we check that the matching pool has liquidity of more than zero.
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L98
+
+then w will call transferLiquidity function from pool library
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/Pool.sol#L158
+
+again at the first line of this function, we have an if block to check if the pool has liquidity.
+
+this is double check!
