@@ -65,26 +65,3 @@ again at the first line of this function, we have and if block to check if the p
 this is double-checking!
 
 ////////////////////////////////////////////// ***** //////////////////////////////////////////////
-
-in TimeswapV2Pool contract and function transferLiquidity, you don't check that msg.sender doesn't use his own address as _to address input. 
-
-https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L152
-
-so the user can call this: transfer liquidity from his address to his address! 
-
-update and burn from his address in step one :
-https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/Pool.sol#L163
-LiquidityPosition storage liquidityPosition = pool.liquidityPositions[msg.sender];
-
-update and mint from his address again in step two :
-https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/Pool.sol#L169;
-LiquidityPosition storage newLiquidityPosition = pool.liquidityPositions[msg.sender];
-
-in the above steps, the below code will get executed twice :
-
-            liquidityPosition.long0Fees += FeeCalculation.getFees(liquidity, liquidityPosition.long0FeeGrowth, long0FeeGrowth);
-            liquidityPosition.long1Fees += FeeCalculation.getFees(liquidity, liquidityPosition.long1FeeGrowth, long1FeeGrowth);
-            liquidityPosition.shortFees += FeeCalculation.getFees(liquidity, liquidityPosition.shortFeeGrowth, shortFeeGrowth);
-
-The same is happening on 
-https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L165
