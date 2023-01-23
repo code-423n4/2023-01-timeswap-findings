@@ -34,4 +34,19 @@ For instance, the `+=` instance below may be refactored as follows:
 -            productA1 += (quotient1 * divisor);
 +            productA1 = productA1 + (quotient1 * divisor);
 ```
+## `||` costs less gas than its equivalent `&&`
+Rule of thumb: `(x && y)` is `(!(!x || !y))`
+
+Even with the 10k Optimizer enabled: `||`, OR conditions cost less than their equivalent `&&`, AND conditions.
+
+As an example, the `&&` instance below may be refactored as follows:
+
+Note: Comment on the changes made for better readability where deemed fit.
+
+[File: Math.sol#L51](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L51)
+
+```diff
+-        if (roundUp && dividend % divisor != 0) quotient++;
++        if (!(!roundUp || dividend % divisor == 0)) quotient++;
+```
 
