@@ -24,3 +24,11 @@ Owner check can be in first in function before check params and raiseguard .
 
 code snippet:-
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L189
+
+## 4 .Lack of to_ address check :-
+code snippet:-
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L158.
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L183.
+
+
+
