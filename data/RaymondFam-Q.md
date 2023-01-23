@@ -126,3 +126,9 @@ For instance, it will be of added values to the users and developers if:
 The return code line in the function below entails only a simple addition that is devoid of division. The comment, `truncation is desired` is therefore deemed non-matching. Consider removing/editing the comment where possible:
 
 [File: TimeswapV2Pool.sol#L82-L84](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L82-L84) 
+
+```solidity
+    function blockTimestamp(uint96 durationForward) internal view virtual returns (uint96) {
+        return uint96(block.timestamp + durationForward); // truncation is desired
+    }
+```
