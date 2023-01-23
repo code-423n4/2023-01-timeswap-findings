@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0xbrett8571",
+  "risk": "2",
+  "title": "Security Flaw in 'Create' Function Allows Unauthorized Creation of Pools in TimeswapV2PoolFactory.sol",
+  "issueId": 78,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/78"
+}
