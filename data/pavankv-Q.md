@@ -6,6 +6,8 @@ In below code snippet dev use  || to check addess(0) if one true it just give er
 
 code snippet:-
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L134
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L156
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L179
 
 Change to :-
         if (param.long0To == address(0) && param.long1To == address(0) && param.shortTo == address(0)) Error.zeroAddress();
