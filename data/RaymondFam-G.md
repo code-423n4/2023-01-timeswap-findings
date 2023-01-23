@@ -49,4 +49,45 @@ Note: Comment on the changes made for better readability where deemed fit.
 -        if (roundUp && dividend % divisor != 0) quotient++;
 +        if (!(!roundUp || dividend % divisor == 0)) quotient++;
 ```
+## Ternary over `if ... else`
+Using ternary operator instead of the if else statement saves gas.
 
+For instance, the specific instance below may be refactored as follows:
+
+[File: ConstantProduct.sol#L149-L150](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L149-L150)
+
+```diff
+-        if (isAdd) longAmount -= fees;
+-        else shortAmount -= fees;
+
++      isAdd
++          ? longAmount -= fees
++          : shortAmount -= fees;
+```
+## Use storage instead of memory for structs/arrays
+A storage pointer is cheaper since copying a state struct in memory would incur as many SLOADs and MSTOREs as there are slots. In another words, this causes all fields of the struct/array to be read from storage, incurring a Gcoldsload (2100 gas) for each field of the struct/array, and then further incurring an additional MLOAD rather than a cheap stack read. As such, declaring the variable with the storage keyword and caching any fields that need to be re-read in stack variables will be much cheaper, involving only Gcoldsload for all associated field reads. Read the whole struct/array into a memory variable only when it is being returned by the function, passed into a function that requires memory, or if the array/struct is being read from another memory array/struct.
+
+For instance, the specific instance below may be refactored as follows:
+
+[File: Token.sol#L275](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L275)
+
+```diff
+-        FeesPosition memory feesPosition = _feesPositions[id][owner];
++        FeesPosition storage feesPosition = _feesPositions[id][owner];
+```
+## Unchecked SafeMath saves gas
+"Checked" math, which is default in ^0.8.0 is not free. The compiler will add some overflow checks, somehow similar to those implemented by `SafeMath`. While it is reasonable to expect these checks to be less expensive than the current `SafeMath`, one should keep in mind that these checks will increase the cost of "basic math operation" that were not previously covered. This particularly concerns variable increments in for loops. When no arithmetic overflow/underflow is going to happen, `unchecked { ... }` to use the previous wrapping behavior further saves gas.
+
+For instance, the code b;lock below may be refactored as follows:
+
+[File: FeesPosition.sol#L52-L56](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/structs/FeesPosition.sol#L52-L56)
+
+```diff
+    function mint(FeesPosition storage feesPosition, uint256 long0Fees, uint256 long1Fees, uint256 shortFees) internal {
++      unchecked {
+        feesPosition.long0Fees += long0Fees;
+        feesPosition.long1Fees += long1Fees;
+        feesPosition.shortFees += shortFees;
++      }
+    }
+```
