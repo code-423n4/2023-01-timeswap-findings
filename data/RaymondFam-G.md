@@ -1,3 +1,44 @@
+## Redundant check 
+In `transferLiquidity()` of TimeswapV2Pool.sol, `pool.liquidity != 0` will be checked in the external [`transferLiquidity()`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L160).
+
+As such, invoking `hasLiquidity(strike, maturity)` preliminarily is unnecessary although this will make the call revert early if `pool.liquidity == 0`.  
+
+Consider having the function refactored as follows to save gas on contract size and all successful calls:
+
+[File: TimeswapV2Pool.sol#L152-L162](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L152-L162)
+
+```diff
+    function transferLiquidity(uint256 strike, uint256 maturity, address to, uint160 liquidityAmount) external override {
+-        hasLiquidity(strike, maturity);
+
+        if (blockTimestamp(0) > maturity) Error.alreadyMatured(maturity, blockTimestamp(0));
+        if (to == address(0)) Error.zeroAddress();
+        if (liquidityAmount == 0) Error.zeroInput();
+
+        pools[strike][maturity].transferLiquidity(to, liquidityAmount, blockTimestamp(0));
+
+        emit TransferLiquidity(strike, maturity, msg.sender, to, liquidityAmount);
+    }
+```
+## Unneeded if block
+In `updateDurationWeightBeforeMaturity()` of Pool.sol, blockTimestamp == [blockTimestamp(0)](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L159) and blockTimestamp(0) == [block.timestamp](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L82-L84). As such, `pool.lastTimestamp < blockTimestamp` will always hold true.
+
+Consider having the if block removed to save gas both on contract deployment and function calls:
+
+[File: Pool.sol#L128-L137](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L128-L137)
+
+```diff
+    function updateDurationWeightBeforeMaturity(Pool storage pool, uint96 blockTimestamp) private {
+-        if (pool.lastTimestamp < blockTimestamp)
+            (pool.lastTimestamp, pool.shortFeeGrowth) = updateDurationWeight(
+                pool.liquidity,
+                pool.sqrtInterestRate,
+                pool.shortFeeGrowth,
+                DurationCalculation.unsafeDurationFromLastTimestampToNow(pool.lastTimestamp, blockTimestamp),
+                blockTimestamp
+            );
+    }
+```
 ## Non-strict inequalities are cheaper than strict ones
 In the EVM, there is no opcode for non-strict inequalities (>=, <=) and two operations are performed (> + = or < + =).
 
