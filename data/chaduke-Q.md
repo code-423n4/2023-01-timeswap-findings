@@ -4,3 +4,9 @@ We need to make sure the two arrays, ``ids`` and ``amounts``, have the same leng
 if(ids.length != amounts.length) revert ArrayLengthsNotEqual();
 
 ```
+
+QA2. https://github.com/code-423n4/2023-01-timeswap/blame/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L79
+We should check if ``from == msg.sender`` as well here
+```
+if (from != msg.sender && !isApprovedForAll(from, msg.sender)) revert NotApprovedToTransferFees();
+```
