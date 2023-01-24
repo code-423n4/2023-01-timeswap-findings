@@ -10,7 +10,6 @@ I created a `Test` contrat below to demonstrate the vulnerability:
 ```
 pragma solidity =0.8.8;
 
-
 contract Test {
    function unsafeAdd(uint256 addend1, uint256 addend2) internal pure returns (uint256 sum) {
         unchecked {
@@ -32,8 +31,23 @@ In the `Test` contract above a function `testOverflow()` was created with variab
 ```
 Expected output = 231584078474632390487141970017375815705399969331281128078915168015826259279870
 
-Actual output = 231584078474632390487141970017375815705399969331281128078915168015826259279870
+Actual output =  115792089237316195423570985008687907853269984665640564039457584007913129639935
 ```
 
 Recommendations:
 * It is highly recomended to use SafeMath library to prevent overflow and underflow which could lead to potential vulnerabilities.
+* Avoid using `unchecked{...}` wrapping.
+
+
+Use more recent version of solidity
+======================
+Problematic contract:
+* All contracts
+
+Description:
+Currently an older version of solidity is used which is version `0.8.8`. It is important to use a newer version of solidity such as the version `0.8.17`. This is because newer version have new features and bug fixes are introduced.
+
+Recommendation:
+use a newer version of solidity which is `0.8.17`
+
+
