@@ -10,3 +10,6 @@ We should check if ``from == msg.sender`` as well here
 ```
 if (from != msg.sender && !isApprovedForAll(from, msg.sender)) revert NotApprovedToTransferFees();
 ```
+
+QA3. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L88-L91
+These two statements should exchange their order since we need to burn first before we can call the ``_updateFeesPositions()``;
