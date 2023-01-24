@@ -27,6 +27,7 @@ Note: The following correction represents only one of the numerous contract inst
 [File: ITimeswapV2PoolMintCallback.sol#L10](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/callbacks/ITimeswapV2PoolMintCallback.sol#L10)
 [File: ITimeswapV2PoolDeleverageCallback.sol#L10](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/callbacks/ITimeswapV2PoolDeleverageCallback.sol#L10)
 [File: Param.sol#L11-L13](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L11-L13)
+[File: Pool.sol#L168](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L168)
 
 ```diff
 -    /// @dev The long0 positions or long1 positions will already be minted to the receipient.
@@ -164,4 +165,37 @@ A zero value check should likewise be executed on `strike` to make the input par
 
         pools[strike][maturity].initialize(rate);
     }
+```
+The same check shall also apply on [`transferLiquidity()` and `transferFees()`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L152-L172).
+
+## Use `delete` to clear variables
+`delete a` assigns the initial value for the type to `a`. i.e. for integers it is equivalent to `a = 0`, but it can also be used on arrays, where it assigns a dynamic array of length zero or a static array of the same length with all elements reset. For structs, it assigns a struct with all members reset. Similarly, it can also be used to set an address to zero address or a boolean to false. It has no effect on whole mappings though (as the keys of mappings may be arbitrary and are generally unknown). However, individual keys and what they map to can be deleted: If `a` is a mapping, then `delete a[x]` will delete the value stored at x.
+
+The delete key better conveys the intention and is also more idiomatic.
+
+For instance, the `a = 0` instance below may be refactored as follows:
+
+[File: Pool.sol#L685](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L685)
+
+```diff
+-                    pool.long1Balance = 0;
++                    delete pool.long1Balance;
+```
+## Variable Assignment in Conditional Check
+Making a variable assignment in a conditional statement deviates from the standard use and intention of the check and can easily lead to confusion.
+
+Here are the instances entailed that should have the needed assignment cached before the conditional statement as follows:
+
+[File: Pool.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol)
+
+```diff
+- 681:                if ((long1Amount = param.delta) == long1AmountAdjustFees) {
+
++                long1Amount = param.delta);
++                if (long1Amount == long1AmountAdjustFees) {
+
+- 702:                if ((long0Amount = param.delta) == long0AmountAdjustFees) {
+
++                long0Amount = param.delta);
++                if (long0Amount == long0AmountAdjustFees) {
 ```
