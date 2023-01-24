@@ -132,3 +132,36 @@ The return code line in the function below entails only a simple addition that i
         return uint96(block.timestamp + durationForward); // truncation is desired
     }
 ```
+## Erroneous function NatSpec
+[File: ITimeswapV2PoolDeployer.sol#L11-L18](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/ITimeswapV2PoolDeployer.sol#L11-L18)
+
+```diff
+    /// @notice Get the parameters to be used in constructing the pair, set transiently during pair creation.
+    /// @dev Called by the pair constructor to fetch the parameters of the pair.
+    /// @return poolFactory The poolFactory address.
+-    /// @param optionPair The Timeswap V2 OptionPair address.
++    /// @return optionPair The Timeswap V2 OptionPair address.
+-    /// @param transactionFee The transaction fee earned by the liquidity providers.
++    /// @return transactionFee The transaction fee earned by the liquidity providers.
+-    /// @param protocolFee The protocol fee earned by the DAO.
++    /// @return protocolFee The protocol fee earned by the DAO.
+    function parameter() external view returns (address poolFactory, address optionPair, uint256 transactionFee, uint256 protocolFee);
+}
+```
+## Missing zero value checks
+When initializing the pool, a boundary and a zero value check has correspondingly been applied on `maturity` and `rate`.
+
+A zero value check should likewise be executed on `strike` to make the input parameters of `initialize()` more error free:
+
+[File: TimeswapV2Pool.sol#L175-L181](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L175-L181)
+
+```diff
+    function initialize(uint256 strike, uint256 maturity, uint160 rate) external override noDelegateCall {
+        if (maturity < blockTimestamp(0)) Error.alreadyMatured(maturity, blockTimestamp(0));
+-        if (rate == 0) Error.cannotBeZero();
++        if (rate == 0 || strike == 0) Error.cannotBeZero();
+        addPoolEnumerationIfNecessary(strike, maturity);
+
+        pools[strike][maturity].initialize(rate);
+    }
+```
