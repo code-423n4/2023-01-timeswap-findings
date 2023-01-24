@@ -152,21 +152,23 @@ The return code line in the function below entails only a simple addition that i
 ## Missing zero value checks
 When initializing the pool, a boundary and a zero value check has correspondingly been applied on `maturity` and `rate`.
 
-A zero value check should likewise be executed on `strike` to make the input parameters of `initialize()` more error free:
+A zero value check should likewise be executed on `strike` and `maturity` to make the input parameters of `initialize()` more error free:
+
+(Note: A zero value check is included for `maturity` to make sure `maturity < blockTimestamp(0)` is going to be a practical/fruitful check. Additionally, the zero value checks is suggested moving to the first line of the function logic so it could become the first line of defense to revert the earliest if need be.) 
 
 [File: TimeswapV2Pool.sol#L175-L181](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L175-L181)
 
 ```diff
     function initialize(uint256 strike, uint256 maturity, uint160 rate) external override noDelegateCall {
++        if (rate == 0 || strike == 0 || maturity == 0) Error.cannotBeZero();
         if (maturity < blockTimestamp(0)) Error.alreadyMatured(maturity, blockTimestamp(0));
 -        if (rate == 0) Error.cannotBeZero();
-+        if (rate == 0 || strike == 0) Error.cannotBeZero();
         addPoolEnumerationIfNecessary(strike, maturity);
 
         pools[strike][maturity].initialize(rate);
     }
 ```
-The same check shall also apply on [`transferLiquidity()` and `transferFees()`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L152-L172).
+The same check shall also apply on [`transferFees()`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L165-L172).
 
 ## Use `delete` to clear variables
 `delete a` assigns the initial value for the type to `a`. i.e. for integers it is equivalent to `a = 0`, but it can also be used on arrays, where it assigns a dynamic array of length zero or a static array of the same length with all elements reset. For structs, it assigns a struct with all members reset. Similarly, it can also be used to set an address to zero address or a boolean to false. It has no effect on whole mappings though (as the keys of mappings may be arbitrary and are generally unknown). However, individual keys and what they map to can be deleted: If `a` is a mapping, then `delete a[x]` will delete the value stored at x.
