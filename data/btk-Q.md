@@ -33,7 +33,7 @@
 
 ## [L-01] Low level calls with solidity version 0.8.14 and lower can result in optimiser bug
 
-The protocol is using low level calls with solidity version less then 0.8.14 which can result in optimizer bug.
+The protocol is using low level calls with solidity version less then 0.8.14 which can result in optimizer bug. The Solidity developers have confirmed this [bug](https://github.com/ethereum/solidity-blog/blob/499ab8abc19391be7b7b34f88953a067029a5b45/_posts/2022-06-15-inline-assembly-memory-side-effects-bug.md) (which was introduced in Solidity 0.8.13) and fixed it in Solidity version 0.8.15. 
 
 > Ref: https://medium.com/certora/overly-optimistic-optimizer-certora-bug-disclosure-2101e3f7994d
 
@@ -54,7 +54,7 @@ The protocol is using low level calls with solidity version less then 0.8.14 whi
 
 ### Recommended Mitigation Steps
 
-Consider upgrading to solidity 0.8.17
+Use solidity version 0.8.15.
 
 ## [L-02] Integer overflow by unsafe casting
 
@@ -87,16 +87,12 @@ In total 6 contracts, 11 unchecked are used, the functions used are critical. Fo
 - [Math.sol:26](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L26)
 - [Math.sol:37](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L37)
 - [Math.sol:72](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L72)
-- [Process.sol:41](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/structs/Process.sol#L41)
 - [ConstantProduct.sol:279](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L279)
 - [ConstantProduct.sol:331](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L331)
-- [TimeswapV2LiquidityToken.sol:230](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L230)
-- [ERC1155Enumerable.sol:51](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/base/ERC1155Enumerable.sol#L51)
-- [ERC1155Enumerable.sol:85](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/base/ERC1155Enumerable.sol#L85)
 
 ### Recommended Mitigation Steps
 
-Use should fuzzing test like Echidna. As Alberto Cuesta Canada said: Fuzzing is not easy, the tools are rough, and the math is hard, but it is worth it. Fuzzing gives me a level of confidence in my smart contracts that I didn’t have before. Relying just on unit testing anymore and poking around in a testnet seems reckless now.
+Use fuzzing test like Echidna. As Alberto Cuesta Canada said: Fuzzing is not easy, the tools are rough, and the math is hard, but it is worth it. Fuzzing gives me a level of confidence in my smart contracts that I didn’t have before. Relying just on unit testing anymore and poking around in a testnet seems reckless now.
 
 > Ref: https://medium.com/coinmonks/smart-contract-fuzzing-d9b88e0b0a05
 
