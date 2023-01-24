@@ -1,4 +1,4 @@
-## Reduce deployment cost by using EIP1167 minimal clones in `TimeswapV2PoolDeployer` and `TimeswapV2OptionDeployer`
+## Reduce deployment cost by using EIP1167 minimal clones
 
 Currently, both `TimeswapV2OptionDeployer` and `TimeswapV2PoolDeployer` create `TimeswapV2Option`s and `TimeswapV2Pool`s by deploying a new contract each time a new pool/option is created. However, this pattern leads to the need of paying for storage costs each time a pool is deployed. 
 
