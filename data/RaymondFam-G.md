@@ -1,7 +1,9 @@
 ## Redundant check 
 In `transferLiquidity()` of TimeswapV2Pool.sol, `pool.liquidity != 0` will be checked in the external [`transferLiquidity()`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L160).
 
-As such, invoking `hasLiquidity(strike, maturity)` preliminarily is unnecessary although this will make the call revert early if `pool.liquidity == 0`.  
+As such, invoking `hasLiquidity(strike, maturity)` preliminarily is unnecessary although this will make the call revert earlier if `pool.liquidity == 0`.  
+
+(Note: A zero value check for `strike` and `maturity` is optionally included to replace `hasLiquidity()`, which is still going to cheaper in terns of gas savings. This is because the former is an inline code whereas the latter is a private function call.) 
 
 Consider having the function refactored as follows to save gas on contract size and all successful calls:
 
@@ -10,6 +12,7 @@ Consider having the function refactored as follows to save gas on contract size 
 ```diff
     function transferLiquidity(uint256 strike, uint256 maturity, address to, uint160 liquidityAmount) external override {
 -        hasLiquidity(strike, maturity);
++        if (strike == 0 || maturity == 0) Error.cannotBeZero();
 
         if (blockTimestamp(0) > maturity) Error.alreadyMatured(maturity, blockTimestamp(0));
         if (to == address(0)) Error.zeroAddress();
