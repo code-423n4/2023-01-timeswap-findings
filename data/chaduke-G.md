@@ -66,3 +66,20 @@ function feesEarnedOf(
        }
     }
 ```
+
+G6. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/base/ERC1155Enumerable.sol#L154-L163
+We can check whether ``tokenIndex == lastTokenIndex`` to save gas:
+```
+ function _removeTokenFromAllTokensEnumeration(uint256 tokenId) private {
+        uint256 lastTokenIndex = _allTokens.length - 1;
+        uint256 tokenIndex = _allTokensIndex[tokenId];
+        uint256 lastTokenId = _allTokens[lastTokenIndex];
+  
+        if(tokenIndex != lastTokenIndex){   // audit: save gas here
+             _allTokens[tokenIndex] = lastTokenId;
+             _allTokensIndex[lastTokenId] = tokenIndex;
+        }
+        delete _allTokensIndex[tokenId];
+        _allTokens.pop();
+    }
+```
