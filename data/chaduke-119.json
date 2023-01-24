@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "chaduke",
+  "risk": "3",
+  "title": " _removeTokenEnumeration() has a bug: even when all _idTotalSupply[id] is burned, the token will not be removed from _allTokens",
+  "issueId": 119,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/119"
+}
