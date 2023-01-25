@@ -13,3 +13,17 @@ if (from != msg.sender && !isApprovedForAll(from, msg.sender)) revert NotApprove
 
 QA3. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L88-L91
 These two statements should exchange their order since we need to burn first before we can call the ``_updateFeesPositions()``;
+
+QA4. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L151
+Adding a check ``param.to != address(this)`` to ensure losing fund.
+
+QA5. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L86-L88
+These two statements need to be exchanged. We need to perform the ``_updateFeesPositions()`` before ``burn()`` and ``mint()``, so that fees can be calculated for both ``from`` and ``to`` with the right amount of liquidity (the original liquidity amount) and brought up to date.
+```
+ _updateFeesPositions(from, to, id);          // @audit: updating fees must occur before the changes of liquidities
+
+_feesPositions[id][to].mint(long0Fees, long1Fees, shortFees);
+
+_feesPositions[id][from].burn(long0Fees, long1Fees, shortFees);
+
+```
