@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "abuzay",
+  "risk": "2",
+  "title": " Unclear Calculation of Duration Forward in blockTimestamp() Function",
+  "issueId": 143,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/143"
+}
