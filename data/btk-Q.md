@@ -6,7 +6,6 @@
 | [L-02] | Integer overflow by unsafe casting                                                 | 1             |
 | [L-03] | Need Fuzzing test                                                                  | All Contracts |
 | [L-04] | Array lengths not checked                                                          | 2             |
-| [L-05] | Using vulnerable dependency of OpenZeppelin                                        | 2             |
 
 ### Total Non-Critical issues
 
@@ -24,12 +23,14 @@
 | [NC-10] | NatSpec comments should be increased in contracts                                         | All Contracts |
 | [NC-11] | Generate perfect code headers every time                                                  | All Contracts |
 | [NC-12] | For functions, follow Solidity standard naming conventions                                | All Contracts |
-| [NC-13] | `Address(0)` checks                                                                       | 3             |
+| [NC-13] | `Address(0)` checks                                                                       | 2             |
 | [NC-14] | Use a more recent version of solidity                                                     | All Contracts |
 | [NC-15] | Assembly Codes Specific – Should Have Comments                                            | 5             |
 | [NC-16] | Events that mark critical parameter changes should contain both the old and the new value | 1             |
 | [NC-17] | Consider using `delete` rather than assigning zero to clear values                        | 10            |
 | [NC-18] | Add NatSpec Mapping comment                                                               | 10            |
+| [NC-19] | Using vulnerable dependency of OpenZeppelin                                               | 2             |
+| [NC-20] | Constants should be defined rather than using magic numbers                               | 18            |
 
 ## [L-01] Low level calls with solidity version 0.8.14 and lower can result in optimiser bug
 
@@ -122,23 +123,6 @@ If the length of the arrays are not required to be of the same length, user oper
 ```solidity
 if (ids.length != amounts.length) revert();
 ```
-
-## [L-05] Using vulnerable dependency of OpenZeppelin 
-
-The package.json configuration file says that the project is using 4.7.2 of OZ which has a not last update version.
-
-```solidity
-    "@openzeppelin/contracts": "^4.7.2",
-```
-
-### Lines of code
-
-- [v2-token/package.json:40](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/package.json#L40)
-- [v2-library/package.json:40](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/package.json#L40)
-
-### Recommended Mitigation Steps
-
-Use patched versions Latest non vulnerable version 4.8.0.
 
 ## [NC-01] Lock pragmas to specific compiler version
 
@@ -400,23 +384,22 @@ Follow solidity standard naming convention.
 Check of `address(0)` to protect the code from `(0x0000000000000000000000000000000000000000)` address problem just in case. This is best practice or instead of suggesting that they verify `_address != address(0)`, you could add some good NatSpec comments explaining what is valid and what is invalid and what are the implications of accidentally using an invalid address.
 
 ```solidity
-    constructor(address chosenOwner) {
-        owner = chosenOwner;
+    constructor(address chosenOptionFactory) ERC1155("Timeswap V2 address") {
+        optionFactory = chosenOptionFactory;
     }
 ```
 
 ### Lines of code 
 
-- [OwnableTwoSteps.sol:18-20](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/base/OwnableTwoSteps.sol#L18-L20)
 - [TimeswapV2LiquidityToken.sol:36-39](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L36-L39)
 - [TimeswapV2Token.sol:41-43](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L41-L43)
 
 ### Recommended Mitigation Steps
 
 ```solidity
-    constructor(address chosenOwner) {
-        if (chosenOwner == address(0)) revert();
-        owner = chosenOwner;
+    constructor(address chosenOptionFactory) ERC1155("Timeswap V2 address") {
+        if (chosenOptionFactory == address(0)) revert();
+        optionFactory = chosenOptionFactory;
     }
 ```
 
@@ -533,3 +516,43 @@ Add NatSpec comments describing mapping keys and values
 - [TimeswapV2Token.sol:38](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L38)
 - [TimeswapV2Token.sol:39](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol#L39)
 - [ERC1155Enumerable.sol:22](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/base/ERC1155Enumerable.sol#L22)
+
+## [NC-19] Using vulnerable dependency of OpenZeppelin 
+
+The package.json configuration file says that the project is using 4.7.2 of OZ which has a not last update version.
+
+```solidity
+    "@openzeppelin/contracts": "^4.7.2",
+```
+
+### Lines of code
+
+- [v2-token/package.json:40](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/package.json#L40)
+- [v2-library/package.json:40](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/package.json#L40)
+
+### Recommended Mitigation Steps
+
+Use patched versions Latest non vulnerable version 4.8.0.
+
+## [NC-20] Constants should be defined rather than using magic numbers 
+
+### Lines of code 
+
+- [BytesLib.sol:13](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/BytesLib.sol#L13)
+- [BytesLib.sol:33](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/BytesLib.sol#L33)
+- [CatchError.sol:15](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/CatchError.sol#L15)
+- [Transaction.sol:53](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/enums/Transaction.sol#L53)
+- [Transaction.sol:58](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/enums/Transaction.sol#L58)
+- [Transaction.sol:63](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/enums/Transaction.sol#L63)
+- [Transaction.sol:68](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/enums/Transaction.sol#L68)
+- [Transaction.sol:73](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/enums/Transaction.sol#L73)
+- [ConstantProduct.sol:30](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L30)
+- [ConstantProduct.sol:39](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L39)
+- [ConstantProduct.sol:260](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L260)
+- [ConstantProduct.sol:269](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L269)
+- [ConstantProduct.sol:280](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L280)
+- [ConstantProduct.sol:316](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L316)
+- [ConstantProduct.sol#L332](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L332)
+- [ConstantProduct.sol#L344](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L344)
+- [ConstantProduct.sol:404](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L404)
+- [ConstantProduct.sol:406](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ConstantProduct.sol#L406)
