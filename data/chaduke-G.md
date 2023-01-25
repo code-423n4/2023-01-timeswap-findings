@@ -83,3 +83,7 @@ We can check whether ``tokenIndex == lastTokenIndex`` to save gas:
         _allTokens.pop();
     }
 ```
+
+G7. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L146
+There are many instances of function call blockTimestamp(0), they can all be replaced by ``uint96(block.timestmap)`` to save the gas of function call and addition with zero. 
+
