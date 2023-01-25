@@ -3,7 +3,7 @@
 |:--:|:-------|
 |[L-01]| No entry point for EOA accounts |
 |[L-02]| Uninitialized state variables |
-|[L-03]| Missing zero-checks |
+|[L-03]|  Unused zero-check function |
 |[L-04]| Optimizer runs can cause errors |
 
 ### Non-Critical Items
@@ -110,27 +110,9 @@ And it should fail because `numberOfPairs` is never initialized.
 
 Add newly created pairs to the `getByIndex` array within the `create` functions of the respective factory contracts, or remove the variables and `numberOfPairs` functions altogether.
 
-## L-03 - Missing-zero-checks 
+## L-03 - Unused zero-check function
 
-The following contract constructors lack zero checks for address parameters:
-
-1. OwnableTwoSteps
-
-   https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/base/OwnableTwoSteps.sol#L18
-
-2. TimeswapV2PoolFactory 
-
-   https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2PoolFactory.sol#L37
-
-3. TimeswapV2LiquidityToken
-
-   https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L36 
-
-4. TimeswapV2token
-
-   https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2Token.sol#L41
-
-There is also a missing zero check in `get` within PoolFactory.sol:
+There is a missing zero check in `get` within PoolFactory.sol:
 
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/libraries/PoolFactory.sol#L13-L33
 
