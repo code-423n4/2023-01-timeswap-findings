@@ -1,34 +1,47 @@
-## 1 .Use Short Circuiting rules to your advantage
-The operators || and && apply the common short-circuiting rules. This means that in the expression f(x) || g(y), if f(x) evaluates to true, g(y) will not be evaluated even if it may have side-effects.
-So setting less costly function to “f(x)” and setting costly function to “g(x)” is efficient.
 
-In below code snippet dev use  || to check addess(0) if one true it just give error but not look into other two .
+## 1 . Zero check should be in first :-
 
-code snippet:-
-https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L134
-https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L156
-https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Param.sol#L179
-
-Change to :-
-        if (param.long0To == address(0) && param.long1To == address(0) && param.shortTo == address(0)) Error.zeroAddress();
-
-
-## 2 . Zero check should be in first :-
+in first line of sqrt() function it convert to type(uint256) to type(uint128) but 0 check is after that. So change it add first 0 check and after that you can add conversion of uint256 to uint128 .
 
 code snippet:-
 
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L71
 
-## 3 Owner check can be in first in function  :-
+## 2 Owner check can be in first in function before any other operations  :-
 Owner check can be in first in function before check params and raiseguard .
 
 code snippet:-
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L189
 
-## 4 .Lack of to_ address check :-
+## 3 .Lack of to_ address check :-
 code snippet:-
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L158.
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol#L183.
 
+##  4 .Add token contract check before creating pair.:-
+
+function create() is there for create token pair but no token contract check . it's good practice to check contract before make a pair .
+
+code snippet:-
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L43
 
 
+## 5 .Wrong comment :-
+
+In the mention comment says [/// @param optionPair The address of the existed Pair contract. ] But when caller calls with exist optionPair address it reverts the transaction because of this line :-
+        if (optionPair != address(0)) revert OptionPairAlreadyExisted(token0, token1, optionPair); 
+
+code snippet:-
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/libraries/OptionPair.sol#L37
+
+Recommendation :-
+Change the comment like this 
+/// @param optionPair  need address(0)  or else it will revert.
+
+## 6 . No array check of _ids and _accounts  :-
+
+code snippet:-
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol#L224
+
+Recommendation :-
+Add require( uint256[] memory ids == uint256[] memory amounts,"No match");
