@@ -2,12 +2,12 @@
 
 ## General Comments
 - Overall the codebase is well-written and intention is generally clear. Variable and function names are descriptive, the code appears to have been written with security issues like reentrancy, overflows, etc. in mind.
-- I would personally recommend against the practice of including extensive libraries in struct and enum files. Some files - e.g. `v2-pool/src/structs/Param.sol`, `v2-pool/src/structs/Pool.sol`, and `/v2-option/src/enums/Transaction.sol` - include both struct/enum declarations as well as a library for manipulation. These libraries would be better suited in `/libraries/`. 
-- Tests are mostly lacking informational comments and still contain many commented-out lines of code
+- I would personally recommend against the practice of including extensive libraries in struct and enum files. Some files - e.g. `v2-pool/src/structs/Param.sol`, `v2-pool/src/structs/Pool.sol`, and `/v2-option/src/enums/Transaction.sol` - include both struct/enum declarations as well as a library for manipulation. These libraries may be better suited in the package's respective `/libraries/` directory. 
+- Tests are mostly lacking informational comments and still contain many commented-out lines of code. Tests are also largely positive tests to ensure functions work given correct conditions, rather than negative tests to ensure the protocol reverts when it is supposed to.
 
 
-## Low Severity #1 - Newly-created options/pools never pushed to getByIndex array
-The dynamic address[] array getByIndex in TimeswapV2OptionFactory.sol and TimeswapV2PoolFactory.sol is never pushed to when a new option/pool is created. This will result in the numberOfPairs() functions in the option/pool factories always returning 0.
+## Low Severity #1 - Newly-created options/pools never pushed to getByIndex array in factories
+The dynamic address[] array getByIndex in TimeswapV2OptionFactory.sol and TimeswapV2PoolFactory.sol is never pushed to when a new option/pool is created. This will result in the `numberOfPairs()` functions in the option/pool factories always returning 0. Note that `TimeswapV2Option.sol` has a separate `numberOfPools()` function that behaves as expected.
 
 - [Option Factory LOC](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L25)
 - [Pool Factory LOC](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2PoolFactory.sol#L33)
