@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "chaduke",
+  "risk": "3",
+  "title": "The collect() function will transfer the WRONG amount of  fees  to the recipient",
+  "issueId": 121,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/121"
+}
