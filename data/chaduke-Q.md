@@ -24,3 +24,6 @@ _feesPositions[id][to].mint(long0Fees, long1Fees, shortFees);
 _feesPositions[id][from].burn(long0Fees, long1Fees, shortFees);
 
 ```
+
+QA5. https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/TimeswapV2Token.sol#L77
+Adding the following check ``param.long0To != address(this) && param.long1To != address(this) && param.shortTo != address(this) revert ToThisContract();`` to avoid losing fund. 
