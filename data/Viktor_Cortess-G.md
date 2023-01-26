@@ -137,3 +137,59 @@ In we unify several if statements, the contract checks the value of both token0 
 
     76: if (from == address(0)) Error.zeroAddress();
         if (to == address(0)) Error.zeroAddress();
+
+
+### [G-06] CHANGING UINT96 TO UINT8 IN library ReentrancyGuard SAVES SOME GAS
+
+In general, it is cheaper to read a uint8 variable than a uint96 variable because uint8 requires less storage than uint96
+
+**\packages\v2-pool\src\libraries\ReentrancyGuard.sol**
+
+    12:  uint96 internal constant NOT_INTERACTED = 0;  //@GAS UINT96 - 32 from TimeswapV2LiquidityToken
+
+    /// @dev The initial and ending state of balanceTarget in the Option struct.
+    uint96 internal constant NOT_ENTERED = 1;
+
+    /// @dev The state where the contract is currently being interacted with.
+    uint96 internal constant ENTERED = 2;
+    function check(uint96 reentrancyGuard) internal pure {
+        if (reentrancyGuard == NOT_INTERACTED) revert NotInteracted();
+        if (reentrancyGuard == ENTERED) revert NoReentrantCall();
+    }
+DEPLOYMENT COST BEFORE: 49099, AFTER: 45499
+CHECK FUNCTION. BEFORE: 326, AFTER: 290
+
+### [G-07] Consider direct call of errors from Errors.sol
+
+Error.sol file consists of errors and functions with the same names and  these functions inside. For example:
+
+    error ZeroInput();
+    function zeroInput() internal pure { 
+        revert ZeroInput();
+    }
+Direct use of errors without functions saves some gas. For example: 
+
+**\packages\v2-pool\src\TimeswapV2Pool.sol**
+
+    152: function transferLiquidity(uint256 strike, uint256 maturity, address to, uint160 liquidityAmount) external override {
+        hasLiquidity(strike, maturity);
+
+        if (blockTimestamp(0) > maturity)   Error.alreadyMatured(maturity, blockTimestamp(0));
+        if (to == address(0)) Error.zeroAddress();
+     -  if (liquidityAmount == 0)   Error.zeroInput(); //Calling a function with error inside
+     +  if (liquidityAmount == 0)  revert   Error.ZeroInput(); // Direct call to the same error
+        pools[strike][maturity].transferLiquidity(to, liquidityAmount, blockTimestamp(0));
+
+        emit TransferLiquidity(strike, maturity, msg.sender, to, liquidityAmount);
+    }
+
+Similar situation with libraries that hold only functions with one if statement and an error inside:
+
+
+
+**\packages\v2-pool\src\libraries\PoolPair.sol**
+
+    15: function checkNotZeroAddress(address poolPair) internal pure { 
+        if (poolPair == address(0)) revert ZeroSwapAddress();
+    }
+
