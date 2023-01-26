@@ -468,11 +468,10 @@ Include NatSpec in assembly codes.
 ```solidity
     function acceptOwner() external override {
         msg.sender.checkIfPendingOwner(pendingOwner);
-
+        
+        emit AcceptOwner(owner, msg.sender);
         owner = msg.sender;
         delete pendingOwner;
-
-        emit AcceptOwner(owner, msg.sender);
     }
 ```
 
