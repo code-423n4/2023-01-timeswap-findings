@@ -19,10 +19,6 @@ https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d
 
 https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-token/src/base/ERC1155Enumerable.sol#L4 
 
-All contracts in the V2-Token src/structs folder
-
-https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-token/src/structs 
-
 ## Tools Used
 
 Manual Analysis
@@ -102,4 +98,39 @@ Manual Analysis
 ### Recommended Mitigation Steps
 
 Recommend defining constants for the numbers and values used throughout the code.
+
+# 4: FOR MODERN AND MORE READABLE CODE; UPDATE IMPORT USAGES
+
+## Context:
+
+Some import lines of code are too long in a single line which makes it difficult to read.
+
+## Proof of Concept
+
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/TimeswapV2Pool.sol#L32 
+
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/Pool.sol#L27 
+
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-pool/src/structs/Pool.sol#L28 
+
+## Tools Used
+
+Manual Analysis
+
+## Recommended Mitigation Steps
+
+Since the elements imported are too many hence making the line of code too long and difficult to read, the elements imported could be represented as below 👇
+
+import {TimeswapV2PoolMintChoiceCallbackParam, 
+TimeswapV2PoolMintCallbackParam, 
+TimeswapV2PoolBurnChoiceCallbackParam, 
+TimeswapV2PoolBurnCallbackParam, 
+TimeswapV2PoolDeleverageChoiceCallbackParam, 
+TimeswapV2PoolDeleverageCallbackParam, 
+TimeswapV2PoolLeverageCallbackParam, 
+TimeswapV2PoolLeverageChoiceCallbackParam, 
+TimeswapV2PoolRebalanceCallbackParam} from "./structs/CallbackParam.sol";
+
+}
+ 
 
