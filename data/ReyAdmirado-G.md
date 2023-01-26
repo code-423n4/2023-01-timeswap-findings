@@ -1,3 +1,14 @@
+| | issue |
+| ----------- | ----------- |
+| 1 | [Multiple address/ID mappings can be combined into a single mapping of an address/ID to a struct, where appropriate](#1-multiple-addressid-mappings-can-be-combined-into-a-single-mapping-of-an-addressid-to-a-struct-where-appropriate) |
+| 2 | [state variables should be cached in stack variables rather than re-reading them from storage (ones that were not mentioned in c4udit)](#2-state-variables-should-be-cached-in-stack-variables-rather-than-re-reading-them-from-storage-ones-that-were-not-mentioned-in-c4udit) |
+| 3 | [`<x> += <y>` costs more gas than `<x> = <x> + <y>` for state variables](#3-x--y-costs-more-gas-than-x--x--y-for-state-variables) |
+| 4 | [not using the named return variables when a function returns, wastes deployment gas](#4-not-using-the-named-return-variables-when-a-function-returns-wastes-deployment-gas) |
+| 5 | [can make the variable outside the loop to save gas](#5-can-make-the-variable-outside-the-loop-to-save-gas) |
+| 6 | [use a more recent version of solidity](#6-use-a-more-recent-version-of-solidity) |
+| 7 | [usage of uint/int smaller than 32 bytes (256 bits) incurs overhead](#7-usage-of-uintint-smaller-than-32-bytes-256-bits-incurs-overhead) |
+| 8 | [switch `if check` positions](#8-switch-if-check-positions) |
+
 
 ## 1. Multiple address/ID mappings can be combined into a single mapping of an address/ID to a struct, where appropriate
 
