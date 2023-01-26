@@ -59,6 +59,12 @@ Note: The following correction represents only one of the numerous contract inst
 -    /// @param amount The amount ot be converted. Token0 amount when zeroToOne. Token1 amount when oneToZero.
 +    /// @param amount The amount to be converted. Token0 amount when zeroToOne. Token1 amount when oneToZero.
 ```
+[File: TimeswapV2Option.sol#L47](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2Option.sol#L47)
+
+```diff
+-    /// @dev mapping of all option state for all strikes and maturies.
++    /// @dev mapping of all option state for all strikes and maturities.
+```
 ## Minimization of truncation
 The number of divisions in an equation should be reduced to minimize truncation frequency, serving to achieve higher precision. And, where deemed fit, comment the code line with the original multiple division arithmetic operation for clarity reason.
 
