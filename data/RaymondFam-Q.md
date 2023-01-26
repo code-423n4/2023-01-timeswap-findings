@@ -53,6 +53,12 @@ Note: The following correction represents only one of the numerous contract inst
 -    /// @dev The initial state which must be change to NOT_ENTERED when first interacting.
 +    /// @dev The initial state which must be changed to NOT_ENTERED when first interacting.
 ```
+[File: StrikeConversion.sol#L22](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/StrikeConversion.sol#L22)
+
+```diff
+-    /// @param amount The amount ot be converted. Token0 amount when zeroToOne. Token1 amount when oneToZero.
++    /// @param amount The amount to be converted. Token0 amount when zeroToOne. Token1 amount when oneToZero.
+```
 ## Minimization of truncation
 The number of divisions in an equation should be reduced to minimize truncation frequency, serving to achieve higher precision. And, where deemed fit, comment the code line with the original multiple division arithmetic operation for clarity reason.
 
@@ -200,4 +206,30 @@ Here are the instances entailed that should have the needed assignment cached be
 
 +                long0Amount = param.delta);
 +                if (long0Amount == long0AmountAdjustFees) {
+```
+## Sort _tokenA and _takenB on create()
+In `create()` of TimeswapV2OptionFactory.sol, instead of reverting the function if the tokens have not been sorted, consider having the function logic refactored as follows to better facilitate the function call:
+
+[File: TimeswapV2OptionFactory.sol#L43-L56](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L43-L56)
+
+```diff
+    function create(address token0, address token1) external override returns (address optionPair) {
+        if (token0 == address(0)) Error.zeroAddress();
+        if (token1 == address(0)) Error.zeroAddress();
+-        OptionPairLibrary.checkCorrectFormat(token0, token1);
++        (token0_, token1_) = token0 < token1 ? (token0, token1) : (token1, token0);
+-        optionPair = optionPairs[token0][token1];
++        optionPair = optionPairs[token0_][token1_];
+-        OptionPairLibrary.checkDoesNotExist(token0, token1, optionPair);
++        OptionPairLibrary.checkDoesNotExist(token0_, token1_, optionPair);
+
+-        optionPair = deploy(address(this), token0, token1);
++        optionPair = deploy(address(this), token0_, token1_);
+
+-        optionPairs[token0][token1] = optionPair;
++        optionPairs[token0_][token1_] = optionPair;
+
+-        emit Create(msg.sender, token0, token1, optionPair);
++        emit Create(msg.sender, token0_, token1_, optionPair);
+    }
 ```
