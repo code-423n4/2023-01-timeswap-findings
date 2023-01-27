@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Qeew",
+  "risk": "2",
+  "title": "Mismatch in if statement check for long0, long1 and shortAmount",
+  "issueId": 288,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/288"
+}
