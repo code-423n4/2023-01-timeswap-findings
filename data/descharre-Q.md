@@ -31,7 +31,7 @@ According to the solidity style guide functions should be ordered like the follo
 
 For example in [TimeswapV2Option.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2Option.sol), constructor is placed after a function.
 ## 4 Unspecific compiler version pragma
-Avoid floating pragmas for non-library contracts. If the pragma version is specific, a know vulnerable compiler version may accidently be selected when deploying.
+Avoid floating pragmas for non-library contracts. If the pragma version is unspecific, a know vulnerable compiler version may accidently be selected when deploying.
 Used in:
 - [TimeswapV2LiquidityToken.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol)
 - [TimeswapV2Token.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/TimeswapV2Token.sol)
