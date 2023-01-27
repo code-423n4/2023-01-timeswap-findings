@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "rbserver",
+  "risk": "2",
+  "title": "User can fail to burn all of minted `Long0` or `Long1` amount for withdrawing corresponding locked `token0` or `token1` amount for an option",
+  "issueId": 197,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/197"
+}
