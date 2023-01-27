@@ -45,8 +45,9 @@ Total 14 issues
 | [NC-20] |There is no need to cast a variable that is already an address, such as address(x)| 1 |
 | [NC-21] |Lines are too long| 67 |
 | [NC-22] |Assembly Codes Specific – Should Have Comments| 2 |
+| [NC-23] |Move owner checks to a modifier| 2 |
 
-Total 22 issues
+Total 23 issues
 
 ### [L-01] Some tokens can have 2 addresses, so should be done check other require
 
@@ -1642,5 +1643,31 @@ packages/v2-library/src/FullMath.sol:
   81:             product1 := sub(sub(mm, product0), lt(mm, product0))
   82:         }
   83:     }
+
+```
+
+### [N-23] Move owner checks to a modifier
+
+It's better to use a modifier for simple owner checks for an easier inspection of functions. In a function it can be forgotten and with a modifier it's easier to see how the function is protected.
+
+**The part where owner is defined;**
+
+```solidity
+
+packages/v2-library/src/Ownership.sol:
+  22:     function checkIfOwner(address owner) internal view {
+  23          if (msg.sender != owner) revert NotTheOwner(msg.sender, owner);
+
+```
+
+ **2 result ;**
+```solidity
+packages/v2-pool/src/TimeswapV2Pool.sol:
+  189:         ITimeswapV2PoolFactory(poolFactory).owner().checkIfOwner();
+  190  
+
+packages/v2-pool/src/base/OwnableTwoSteps.sol:
+  23      function setPendingOwner(address chosenPendingOwner) external override {
+  24:         Ownership.checkIfOwner(owner);
 
 ```
