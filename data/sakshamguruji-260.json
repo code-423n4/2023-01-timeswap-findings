@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "sakshamguruji",
+  "risk": "2",
+  "title": "All Transfer Hooks have incomplete checks which might lead to transactions reverting",
+  "issueId": 260,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/260"
+}
