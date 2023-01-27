@@ -121,7 +121,8 @@ Manual Analysis
 
 Since the elements imported are too many hence making the line of code too long and difficult to read, the elements imported could be represented as below 👇
 
-import {TimeswapV2PoolMintChoiceCallbackParam, 
+import {
+TimeswapV2PoolMintChoiceCallbackParam, 
 TimeswapV2PoolMintCallbackParam, 
 TimeswapV2PoolBurnChoiceCallbackParam, 
 TimeswapV2PoolBurnCallbackParam, 
