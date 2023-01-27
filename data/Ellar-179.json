@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Ellar",
+  "risk": "2",
+  "title": "Malicious user can raise interest rates on arbitrary pools with zero liquidity",
+  "issueId": 179,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/179"
+}
