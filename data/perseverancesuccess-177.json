@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "perseverancesuccess",
+  "risk": "2",
+  "title": "in TimeswapV2Pool.sol, call to  mint, burn, deleverage, leverage in with durationForward always revert due to isQuote is true",
+  "issueId": 177,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/177"
+}
