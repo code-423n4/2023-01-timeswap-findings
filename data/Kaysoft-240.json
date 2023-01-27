@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Kaysoft",
+  "risk": "2",
+  "title": "TOKEN CAN BE LOCKED WHEN THE `_mint` function is called to mint token to a contract that does not support the ERC1155",
+  "issueId": 240,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/240"
+}
