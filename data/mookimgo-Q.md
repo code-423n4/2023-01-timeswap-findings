@@ -15,3 +15,11 @@ https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/li
 @notice Reverts when balanceTarget is not zero.
 
 but there's no balanceTarget, this comment should be removed.
+
+# 4. misleading numberOfPairs function in TimeswapV2OptionFactory
+
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L36
+
+`numberOfPairs` function return length of getByIndex, but the `getByIndex` list is not modified in create.
+
+Remove this numberOfPairs function and getByIndex variable, or add a write `getByIndex.push(optionPair)` in create.
