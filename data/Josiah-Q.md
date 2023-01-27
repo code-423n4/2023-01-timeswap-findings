@@ -81,3 +81,74 @@ However, [the second line of `sqrtInterestRate()` NatSpec](https://github.com/co
 Suggested fix:
 
 Update the function NatSpec to correctly portray its intended message.
+
+## TOKEN SORT LOGIC
+In TimeswapV2OptionFactory.sol, `create()` will readily revert if `token0 > token1`, which is not very efficient in terms of gas efficiency and user friendliness.
+
+[TimeswapV2OptionFactory.sol#L46](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L46)
+
+```
+        OptionPairLibrary.checkCorrectFormat(token0, token1);
+```
+Suggested fix:
+
+Replace the above code line above with a sort logic that is only 1 code line long:
+
+```
+    function create(address _token0, address _token1) external override returns (address optionPair) {
+        if (_token0 == address(0)) Error.zeroAddress();
+        if (_token1 == address(0)) Error.zeroAddress();
+        (token0, token1) = token0_ < token1_ ? (token0_, token1_) : (token1_, token0_);
+
+        optionPair = optionPairs[token0][token1];
+        OptionPairLibrary.checkDoesNotExist(token0, token1, optionPair);
+
+        optionPair = deploy(address(this), token0, token1);
+
+        optionPairs[token0][token1] = optionPair;
+
+        emit Create(msg.sender, token0, token1, optionPair);
+    }
+```
+## A SIMPLE ZERO ADDRESS CHECK
+In TimeswapV2OptionFactory.sol, `OptionPairLibrary.checkDoesNotExist()` in `create()` is simply making sure `optionPair` is a zero address. There isn't really a need to call the library for this simple check.
+
+[TimeswapV2OptionFactory.sol#L49](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L49)
+
+```
+        OptionPairLibrary.checkDoesNotExist(token0, token1, optionPair);
+```
+Suggested fix:
+
+Replace the above code line with the following:
+
+```
+        if (optionPair != address(0)) Error.alreadyExisted(); // @ audit: Update this in Error.sol
+```
+Along with the sort logic implemented, [`OptionPair.sol`](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/libraries/OptionPair.sol) could pretty much be done away.
+
+## THE USE OF DELETE TO RESET VARIABLES
+`delete a` assigns the initial value for the type to `a`. i.e. for integers it is equivalent to `a = 0`, but it can also be used on arrays, where it assigns a dynamic array of length zero or a static array of the same length with all elements reset. For structs, it assigns a struct with all members reset. Similarly, it can also be used to set an address to zero address or a boolean to false. It has no effect on whole mappings though (as the keys of mappings may be arbitrary and are generally unknown). However, individual keys and what they map to can be deleted: If `a` is a mapping, then `delete a[x]` will delete the value stored at x.
+
+The delete key better conveys the intention and is also more idiomatic.
+
+Here are the 3 specific examples.
+
+[Pool.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/structs/Pool.sol)
+
+```
+228:            pool.long0ProtocolFees = 0;
+
+236:            pool.long1ProtocolFees = 0;
+
+244:            pool.shortProtocolFees = 0;
+```
+Suggested fix:
+
+```
+228:            delete pool.long0ProtocolFees;
+
+236:            delete pool.long1ProtocolFees;
+
+244:            delete pool.shortProtocolFees;
+```
