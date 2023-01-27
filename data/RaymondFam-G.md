@@ -65,6 +65,34 @@ Consider removing these unusable functions and state arrays to save gas on contr
 - 37:        return getByIndex.length;
 - 38:    }
 ```
+## Inline code
+Embedded function call entailing only one line of code may be made inline to save gas. 
+
+For instance, in `create()` of TimeswapV2OptionFactory.sol, `OptionPairLibrary.checkDoesNotExist(token0, token1, optionPair)` is only making sure `optionPair == address(0)`.
+
+For this reason, consider having the affected code line refactored as follows:
+
+Note: The suggested error may have to be added/implemented in [Error.sol](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Error.sol).
+
+[File: TimeswapV2OptionFactory.sol#L43-L56](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L43-L56)
+
+```diff
+    function create(address token0, address token1) external override returns (address optionPair) {
+        if (token0 == address(0)) Error.zeroAddress();
+        if (token1 == address(0)) Error.zeroAddress();
+        OptionPairLibrary.checkCorrectFormat(token0, token1);
+
+        optionPair = optionPairs[token0][token1];
+-        OptionPairLibrary.checkDoesNotExist(token0, token1, optionPair);
++        if (optionPair != address(0)) Error.alreadyExisted();
+
+        optionPair = deploy(address(this), token0, token1);
+
+        optionPairs[token0][token1] = optionPair;
+
+        emit Create(msg.sender, token0, token1, optionPair);
+    }
+```
 ## Non-strict inequalities are cheaper than strict ones
 In the EVM, there is no opcode for non-strict inequalities (>=, <=) and two operations are performed (> + = or < + =).
 
