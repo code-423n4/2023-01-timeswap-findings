@@ -1,0 +1,1 @@
+On all contracts the Solidity version should be upgraded to the latest version 0.8.17
