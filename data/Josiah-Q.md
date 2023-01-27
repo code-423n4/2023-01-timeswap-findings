@@ -152,3 +152,61 @@ Suggested fix:
 
 244:            delete pool.shortProtocolFees;
 ```
+## ZERO VALUE CHECK
+A zero value check on `strike` is missing when [initializing the pool](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L175-L181) that could lead to malfunction when assessing the mapping, `pools`.
+
+Suggested fix:
+
+Update the second if block to:
+
+```
+        if (rate == 0 || strike == 0) Error.cannotBeZero();
+``` 
+## USE MORE RECENT VERSIONS OF SOLIDITY
+Lower versions like 0.8.8 are being used in the protocol contracts. For better security, it is best practice to use the latest Solidity version, 0.8.17.
+
+Please visit the versions security fix list in the link below for detailed info:
+
+https://github.com/ethereum/solidity/blob/develop/Changelog.md
+
+## SOLIDITY COMPILER OPTIMIZATIONS COULD BE PROBLEMATIC
+```
+hardhat.config.js:
+  29  module.exports = {
+  30:   solidity: {
+  31:     compilers: [
+  32:       {
+  33:         version: "0.8.8",
+  34:         settings: {
+  35:           optimizer: {
+  36:               enabled: true,
+  37:               runs: 1000000
+  38
+            }
+```
+Description: Protocol has enabled optional compiler optimizations in Solidity. There have been several optimization bugs with security implications. Moreover, optimizations are actively being developed. Solidity compiler optimizations are disabled by default, and it is unclear how many contracts in the wild actually use them.
+
+Therefore, it is unclear how well they are being tested and exercised. High-severity security issues due to optimization bugs have occurred in the past. A high-severity bug in the emscripten-generated solc-js compiler used by Truffle and Remix persisted until late 2018. The fix for this bug was not reported in the Solidity CHANGELOG.
+
+Another high-severity optimization bug resulting in incorrect bit shift results was patched in Solidity 0.5.6. More recently, another bug due to the incorrect caching of keccak256 was reported. A compiler audit of Solidity from November 2018 concluded that the optional optimizations may not be safe. It is likely that there are latent bugs related to optimization and that new bugs will be introduced due to future optimizations.
+
+Exploit Scenario A latent or future bug in Solidity compiler optimizations—or in the Emscripten transpilation to solc-js—causes a security vulnerability in the contracts.
+
+Recommendation: Short term, measure the gas savings from optimizations and carefully weigh them against the possibility of an optimization-related bug. Long term, monitor the development and adoption of Solidity compiler optimizations to assess their maturity.
+
+## CONTRACT LAYOUT ON FUNCTION WRITINGS COMPLIANCE WITH SOLIDITY'S STYLE GUIDE
+As denoted in Solidity's Style Guide:
+
+https://docs.soliditylang.org/en/v0.8.17/style-guide.html
+
+In order to help readers identify which functions they can call, and find the constructor and fallback definitions more easily, functions should be grouped according to their visibility and ordered in the following manner:
+
+constructor, receive function (if exists), fallback function (if exists), external, public, internal, private
+
+And, within a grouping, place the view and pure functions last.
+
+Additionally, inside each contract, library or interface, use the following order:
+
+type declarations, state variables, events, modifiers, functions
+
+Where possible, consider adhering to the above guidelines for all contract instances entailed.
