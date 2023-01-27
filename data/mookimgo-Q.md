@@ -7,3 +7,11 @@ https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/T
 # 2. changeInteractedIfNecessary, raiseGuard, and lowerGuard should be moved to a parent contract
 
 Both TimeswapV2Token and TimeswapV2LiquidityToken use these three functions, consider moving them to a shred parent contract.
+
+# 3. misleading docs of ReentrancyGuard
+
+https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ReentrancyGuard.sol#L21
+
+@notice Reverts when balanceTarget is not zero.
+
+but there's no balanceTarget, this comment should be removed.
