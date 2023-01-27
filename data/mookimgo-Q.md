@@ -4,11 +4,7 @@ https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/T
 
 `console.log` should be removed before deploying.
 
-# 2. changeInteractedIfNecessary, raiseGuard, and lowerGuard should be moved to a parent contract
-
-Both TimeswapV2Token and TimeswapV2LiquidityToken use these three functions, consider moving them to a shred parent contract.
-
-# 3. misleading docs of ReentrancyGuard
+# 2. misleading docs of ReentrancyGuard
 
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/libraries/ReentrancyGuard.sol#L21
 
@@ -16,7 +12,7 @@ https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/li
 
 but there's no balanceTarget, this comment should be removed.
 
-# 4. misleading numberOfPairs function in TimeswapV2OptionFactory and TimeswapV2PoolFactory
+# 3. misleading numberOfPairs function in TimeswapV2OptionFactory and TimeswapV2PoolFactory
 
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-option/src/TimeswapV2OptionFactory.sol#L36
 https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2PoolFactory.sol#L52
