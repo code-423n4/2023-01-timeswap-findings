@@ -16,8 +16,9 @@
 |[L-12]| Missing ReEntrancy Guard to `swap` function| 1 |
 |[L-13]| Use UniswapV3’s `mulDiv` function for rigorous validation| 1 |
 |[L-14]| Storage Write Removal Bug On Conditional Early Termination| 1 |
+|[L-15]| Critical technical faulty definition in the documents|  |
 
-Total 14 issues
+Total 15 issues
 
 
 ### Non-Critical Issues List
@@ -719,6 +720,51 @@ https://blog.soliditylang.org/2022/09/08/storage-write-removal-before-conditiona
 
 ### Recommended Mitigation Steps
 Upgrade  pragma to version 0.8.17
+
+
+
+### [L-15] Critical technical faulty definition in the documents
+
+```
+
+README.md:
+
+   ## Timeswap v2-Option
+   Timeswap option is a close implementation of European option given 
+   the caveats of writing smart contracts in Ethereum.
+   Given a pair of tokens, defined as token0 and token1, 
+   the option is fully collateralized with either one of the tokens. 
+   When the option has locked token0, then it gives the holder the right 
+   but not the obligation to swap token1 for token0 before the maturity of the option. 
+   When the option has locked token1, then the holder can swap token0 for token1. 
+   When the swap is exercised, the token that is deposited becomes the new locked 
+   token of the option, giving the holder the right but not the obligation to swap 
+   the tokens back before maturity. This design gives the holder the ability to swap 
+   token0 and token1 back and forth at a given strike rate, for however
+   many times before the expiry of the option.
+
+```
+https://github.com/code-423n4/2023-01-timeswap#timeswap-v2-option
+
+In the explanations, it is stated that the project is close to the European Type Option, but with the explanation below, it is clearly understood that it is the American type option.
+
+European Style Options: can be exercised only at expiration.
+American Style Options: can be exercised at any time prior to expiration.
+
+https://www.cmegroup.com/education/courses/introduction-to-options/understanding-the-difference-european-vs-american-style-options.html
+
+```
+This design gives the holder the ability to swap token0 and token1 back and forth at a given strike rate, 
+for however many times before the expiry of the option.
+```
+
+### Recomendation Step:
+
+
+Update the document
+
+If the description is correct and it is a European Type Option, the architecture in the Codes is faulty and the problem can be classified as MEDIUM.
+
 
 ### [N-01] Remove Unused Codes
 
