@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0Kage",
+  "risk": "3",
+  "title": "Malicious borrower can create pool imbalance by tricking the V2 pool to send lesser number of long tokens in exchange for short tokens",
+  "issueId": 191,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/191"
+}
