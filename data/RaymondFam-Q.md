@@ -65,6 +65,12 @@ Note: The following correction represents only one of the numerous contract inst
 -    /// @dev mapping of all option state for all strikes and maturies.
 +    /// @dev mapping of all option state for all strikes and maturities.
 ```
+[File: ITimeswapV2Pool.sol#L132](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/ITimeswapV2Pool.sol#L132)
+
+```diff
+-    /// @param to If isLong0ToLong1 then receipient of long0 positions, ekse recipient of long1 positions.
++    /// @param to If isLong0ToLong1 then recipient of long0 positions, else recipient of long1 positions.
+```
 ## Minimization of truncation
 The number of divisions in an equation should be reduced to minimize truncation frequency, serving to achieve higher precision. And, where deemed fit, comment the code line with the original multiple division arithmetic operation for clarity reason.
 
@@ -161,6 +167,17 @@ The return code line in the function below entails only a simple addition that i
     function parameter() external view returns (address poolFactory, address optionPair, uint256 transactionFee, uint256 protocolFee);
 }
 ```
+[File: ITimeswapV2PoolFactory.sol#L37-L42](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/ITimeswapV2PoolFactory.sol#L37-L42)
+
+```diff
+    /// @dev Creates a Timeswap V2 Pool based on option parameter.
+    /// @dev Cannot create a duplicate Timeswap V2 Pool with the same option parameter.
+    /// @param option The address of the option contract used by the pool.
+-    /// @param poolPair The address of the Timeswap V2 Pool contract created.
++    /// @return poolPair The address of the Timeswap V2 Pool contract created.
+    function create(address option) external returns (address poolPair);
+}
+```
 ## Missing zero value checks
 When initializing the pool, a boundary and a zero value check has correspondingly been applied on `maturity` and `rate`.
 
@@ -236,4 +253,17 @@ In `create()` of TimeswapV2OptionFactory.sol, instead of reverting the function 
 -        emit Create(msg.sender, token0, token1, optionPair);
 +        emit Create(msg.sender, token0_, token1_, optionPair);
     }
+```
+## Comment and documentation mismatch
+According to the [whitepaper](https://github.com/code-423n4/2023-01-timeswap/blob/main/whitepaper.pdf),
+
+z/(x+y) is the marginal interest (I) rate per second of the Short (z) per total Long (x + y).
+
+However, it is stated differently in the NatSpec comment below which should be corrected as follows: 
+
+[File: ITimeswapV2Pool.sol#L170](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/interfaces/ITimeswapV2Pool.sol#L170)
+
+```
+-    /// @dev the square root of interest rate is z/(x+y) where z is the short amount, x+y is the long0 amount, and y is the long1 amount.
++    /// @dev the square root of interest rate is sqrt(z/(x+y)) where z is the short amount, x is the long0 amount, and y is the long1 amount.
 ```
