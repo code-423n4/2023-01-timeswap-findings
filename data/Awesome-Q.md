@@ -9,7 +9,7 @@ Here are a few examples of lousy comment spacing:
 
 /*This is a comment with no whitespace at the beginning */
 
-/* This is a comment with whitespace at the beginning but not the end*/
+/* This is a comment with a whitespace at the beginning but not the end*/
 ```
 
 Here are a few examples of good comment spacing:
