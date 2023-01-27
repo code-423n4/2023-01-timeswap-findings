@@ -162,6 +162,28 @@ Update the second if block to:
 ```
         if (rate == 0 || strike == 0) Error.cannotBeZero();
 ``` 
+## REPEATED SANITY CHECK
+In TimeswapV2Pool.sol, `transferLiquidity(()` calls `hasLiquidity()` to make sure the pool liquidity is not zero. However, this similar check is going to be performed when calling `pools[strike][maturity].transferLiquidity()`.
+
+[TimeswapV2Pool.sol#L152-L162](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-pool/src/TimeswapV2Pool.sol#L152-L162)
+
+```
+    function transferLiquidity(uint256 strike, uint256 maturity, address to, uint160 liquidityAmount) external override {
+        hasLiquidity(strike, maturity);
+
+        if (blockTimestamp(0) > maturity) Error.alreadyMatured(maturity, blockTimestamp(0));
+        if (to == address(0)) Error.zeroAddress();
+        if (liquidityAmount == 0) Error.zeroInput();
+
+        pools[strike][maturity].transferLiquidity(to, liquidityAmount, blockTimestamp(0));
+
+        emit TransferLiquidity(strike, maturity, msg.sender, to, liquidityAmount);
+    }
+```
+Suggested fix:
+
+Remove `hasLiquidity(strike, maturity)` and do only 1 needed check on pool liquidity.
+
 ## USE MORE RECENT VERSIONS OF SOLIDITY
 Lower versions like 0.8.8 are being used in the protocol contracts. For better security, it is best practice to use the latest Solidity version, 0.8.17.
 
