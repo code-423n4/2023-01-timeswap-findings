@@ -1,0 +1,1 @@
+# [NC-01] Use more recent version of solidity
