@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0Kage",
+  "risk": "3",
+  "title": "User receives lesser number of `Long` Tokens on burning Pool liquidity resulting in loss of user funds",
+  "issueId": 187,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/187"
+}
