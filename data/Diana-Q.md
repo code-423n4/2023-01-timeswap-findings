@@ -228,7 +228,7 @@ _There is 1 instance of this issue_
 https://github.com/code-423n4/2022-10-timeswap/blob/main/packages/v2-token/src/TimeswapV2LiquidityToken.sol
 
 ```
-File: main/packages/v2-pool/src/libraries/PoolPair.sol
+File: main/packages/v2-token/src/TimeswapV2LiquidityToken.sol
 
 2: pragma solidity ^0.8.8; 
 ```
