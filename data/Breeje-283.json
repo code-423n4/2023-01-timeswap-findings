@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "Breeje",
+  "risk": "3",
+  "title": "ATTACKER CAN STEAL FUNDS BECAUSE OF REENTRANCY VULNERABILITY IN `burn` METHOD ",
+  "issueId": 283,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/283"
+}
