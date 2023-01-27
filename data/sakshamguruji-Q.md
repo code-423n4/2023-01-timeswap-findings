@@ -1,3 +1,11 @@
+## _addTokenToOwnerEnumeration DOES NOT UPDATE THE allTokens ARRAY
+
+### Description:
+
+The function here https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-token/src/base/ERC1155Enumerable.sol#L116
+does not update the _allTokens[] array whereas it should if we are adding a non existential (not present in the allTokens)token to the owner's list
+of tokens. 
+
 ## MISSING DOCSTRINGS
 
 ### Description:
