@@ -1,6 +1,6 @@
 - To save Gas it should be considered to mark constructors as payable.
 
-- Due to the external functions never using the ```msg.value``` amount in any way, it can be considered to mark external functions also as payable this can possibly save on op codes without negative impact, as checking for zero msg values uses gas to run the following opcodes.
+- On all contracts: Due to the external functions never using the ```msg.value``` amount in any way, it can be considered to mark external functions also as payable this can possibly save on op codes without negative impact, as checking for zero msg values uses gas to run the following opcodes.
 ALLVALUE(2),DUP1(3),ISZERO(3),PUSH2(3),JUMPI(10),PUSH1(3),DUP1(3),REVERT(0),JUMPDEST(1),POP(2) about 21 gas per call.
 
 Below is an example of the current code state with functions not marked as payable:
