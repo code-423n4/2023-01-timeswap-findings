@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "gerdusx",
+  "risk": "2",
+  "title": "Lock of all pool factory' pools protocol fees if pool factory get deployed with 0 address as chosenOwner",
+  "issueId": 212,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/212"
+}
