@@ -1,0 +1,1 @@
+- TimestampB2Pool.blockTimestamp() is exploitable for overflowing, as it doesn't check for the end value to be less than max of uint96, advised to use SafeCast or if it's for testing purposes to be resolved on production.
