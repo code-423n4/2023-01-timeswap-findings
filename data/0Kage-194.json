@@ -1,0 +1,8 @@
+{
+  "contest": 206,
+  "handle": "0Kage",
+  "risk": "3",
+  "title": "A malicious rebalancer can imbalance the `constant sum` nature of long token pool by depositing a larger number of input tokens for a smaller number of output tokens. This also imbalances the `constant product` nature of 3 token pool",
+  "issueId": 194,
+  "issueUrl": "https://github.com/code-423n4/2023-01-timeswap-findings/issues/194"
+}
