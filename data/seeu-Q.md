@@ -973,3 +973,127 @@ To increase explicitness and readability, take into account introducing and util
 ### References
 
 - [Unnamed return parameters | Opyn Bull Strategy Contracts Audit](https://blog.openzeppelin.com/opyn-bull-strategy-contracts-audit/#unnamed-return-parameters)
+
+
+## [L-05] Avoid using abi.encodePacked() with dynamic types when passing the result to a hash function
+
+### Description
+
+Instead of using `abi.encodePacked()` use `abi.encode()`. It will pad items to 32 bytes, which will prevent [hash collisions](https://docs.soliditylang.org/en/v0.8.13/abi-spec.html#non-standard-packed-mode).
+
+It is possible to cast to `bytes()` or `bytes32()` in place of `abi.encodePacked()` when there is just one parameter, see "[how to compare strings in solidity?](https://ethereum.stackexchange.com/questions/30912/how-to-compare-strings-in-solidity#answer-82739)". `bytes.concat()` should be used if all parameters are strings or bytes.
+
+### Findings
+
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-library/lib/forge-std/lib/ds-test/src/test.sol
+  ```Solidity
+  ::56 =>                 (, bytes memory retdata) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("load(address,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"))));
+  ::65 =>             (bool status, ) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("store(address,bytes32,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"), bytes32(uint256(0x01)))));
+  ::461 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ::470 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-library/lib/forge-std/src/StdCheats.sol
+  ```Solidity
+  ::435 =>         privateKey = uint256(keccak256(abi.encodePacked(name)));
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-library/lib/forge-std/src/StdStorage.sol
+  ```Solidity
+  ::39 =>         if (self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::40 =>             return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::59 =>             emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[0]));
+  ::60 =>             self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[0]);
+  ::61 =>             self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::79 =>                     emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[i]));
+  ::80 =>                     self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[i]);
+  ::81 =>                     self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::91 =>         require(self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))], "stdStorage find(StdStorage): Slot(s) not found.");
+  ::98 =>         return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::252 =>         if (!self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::255 =>         bytes32 slot = bytes32(self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]);
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-library/lib/forge-std/src/StdUtils.sol
+  ```Solidity
+  ::48 =>         if (nonce == 0x00) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, bytes1(0x80))));
+  ::49 =>         if (nonce <= 0x7f) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, uint8(nonce))));
+  ::52 =>         if (nonce <= 2 ** 8 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd7), bytes1(0x94), deployer, bytes1(0x81), uint8(nonce))));
+  ::53 =>         if (nonce <= 2 ** 16 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd8), bytes1(0x94), deployer, bytes1(0x82), uint16(nonce))));
+  ::54 =>         if (nonce <= 2 ** 24 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd9), bytes1(0x94), deployer, bytes1(0x83), uint24(nonce))));
+  ::62 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xda), bytes1(0x94), deployer, bytes1(0x84), uint32(nonce))));
+  ::66 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xff), deployer, salt, initcodeHash)));
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-pool/lib/forge-std/lib/ds-test/src/test.sol
+  ```Solidity
+  ::56 =>                 (, bytes memory retdata) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("load(address,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"))));
+  ::65 =>             (bool status, ) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("store(address,bytes32,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"), bytes32(uint256(0x01)))));
+  ::461 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ::470 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-pool/lib/forge-std/src/StdCheats.sol
+  ```Solidity
+  ::389 =>         privateKey = uint256(keccak256(abi.encodePacked(name)));
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-pool/lib/forge-std/src/StdStorage.sol
+  ```Solidity
+  ::39 =>         if (self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::40 =>             return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::59 =>             emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[0]));
+  ::60 =>             self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[0]);
+  ::61 =>             self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::79 =>                     emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[i]));
+  ::80 =>                     self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[i]);
+  ::81 =>                     self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::91 =>         require(self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))], "stdStorage find(StdStorage): Slot(s) not found.");
+  ::98 =>         return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::252 =>         if (!self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::255 =>         bytes32 slot = bytes32(self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]);
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-pool/lib/forge-std/src/StdUtils.sol
+  ```Solidity
+  ::73 =>         if (nonce == 0x00) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, bytes1(0x80))));
+  ::74 =>         if (nonce <= 0x7f) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, uint8(nonce))));
+  ::77 =>         if (nonce <= 2 ** 8 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd7), bytes1(0x94), deployer, bytes1(0x81), uint8(nonce))));
+  ::78 =>         if (nonce <= 2 ** 16 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd8), bytes1(0x94), deployer, bytes1(0x82), uint16(nonce))));
+  ::79 =>         if (nonce <= 2 ** 24 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd9), bytes1(0x94), deployer, bytes1(0x83), uint24(nonce))));
+  ::87 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xda), bytes1(0x94), deployer, bytes1(0x84), uint32(nonce))));
+  ::91 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xff), deployer, salt, initcodeHash)));
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-token/lib/forge-std/lib/ds-test/src/test.sol
+  ```Solidity
+  ::56 =>                 (, bytes memory retdata) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("load(address,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"))));
+  ::65 =>             (bool status, ) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256("store(address,bytes32,bytes32)")), abi.encode(HEVM_ADDRESS, bytes32("failed"), bytes32(uint256(0x01)))));
+  ::461 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ::470 =>         if (keccak256(abi.encodePacked(a)) != keccak256(abi.encodePacked(b))) {
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-token/lib/forge-std/src/StdCheats.sol
+  ```Solidity
+  ::389 =>         privateKey = uint256(keccak256(abi.encodePacked(name)));
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-token/lib/forge-std/src/StdStorage.sol
+  ```Solidity
+  ::39 =>         if (self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::40 =>             return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::59 =>             emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[0]));
+  ::60 =>             self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[0]);
+  ::61 =>             self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::79 =>                     emit SlotFound(who, fsig, keccak256(abi.encodePacked(ins, field_depth)), uint256(reads[i]));
+  ::80 =>                     self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = uint256(reads[i]);
+  ::81 =>                     self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))] = true;
+  ::91 =>         require(self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))], "stdStorage find(StdStorage): Slot(s) not found.");
+  ::98 =>         return self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))];
+  ::252 =>         if (!self.finds[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]) {
+  ::255 =>         bytes32 slot = bytes32(self.slots[who][fsig][keccak256(abi.encodePacked(ins, field_depth))]);
+  ```
+- https://github.com/code-423n4/2023-01-timeswap/tree/main/packages/v2-token/lib/forge-std/src/StdUtils.sol
+  ```Solidity
+  ::89 =>         if (nonce == 0x00) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, bytes1(0x80))));
+  ::90 =>         if (nonce <= 0x7f) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer, uint8(nonce))));
+  ::93 =>         if (nonce <= 2 ** 8 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd7), bytes1(0x94), deployer, bytes1(0x81), uint8(nonce))));
+  ::94 =>         if (nonce <= 2 ** 16 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd8), bytes1(0x94), deployer, bytes1(0x82), uint16(nonce))));
+  ::95 =>         if (nonce <= 2 ** 24 - 1) return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xd9), bytes1(0x94), deployer, bytes1(0x83), uint24(nonce))));
+  ::103 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xda), bytes1(0x94), deployer, bytes1(0x84), uint32(nonce))));
+  ::107 =>         return addressFromLast20Bytes(keccak256(abi.encodePacked(bytes1(0xff), deployer, salt, initcodeHash)));
+  ```
+
+### Resources
+
+- [[L-1] abi.encodePacked() should not be used with dynamic types when passing the result to a hash function such as keccak256()](https://gist.github.com/GalloDaSballo/39b929e8bd48704b9d35b448aaa29480#l-1--abiencodepacked-should-not-be-used-with-dynamic-types-when-passing-the-result-to-a-hash-function-such-as-keccak256)
