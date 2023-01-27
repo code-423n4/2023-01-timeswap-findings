@@ -1,0 +1,6 @@
+The checkEnough method in library Error is used to judge whether a sufficient amount of tokens has been transferred to the contract. The detailed judgment conditions are: `if (balance < balanceTarget) revert NotEnoughReceived(balance, balanceTarget);` it should be considered that the transferred token amount is greater than the required amount In this case, since the interaction with the TimeswapV2Option contract is another smart contract, considering the complexity of the application implementation of different contracts, if there is an excessive transfer of tokens, these tokens will be permanently locked in TimeswapV2Option and cannot be used. TimeswapV2Option It is obliged to provide an additional layer of protection for the smart contract of the partner. From this perspective, this must be done.
+
+Reference solution: Change the judgment statement condition `if (balance < balanceTarget)` to `if (balance != balanceTarget)`
+
+Detailed permalink:
+https://github.com/code-423n4/2023-01-timeswap/blob/ef4c84fb8535aad8abd6b67cc45d994337ec4514/packages/v2-library/src/Error.sol#L152
