@@ -267,3 +267,22 @@ However, it is stated differently in the NatSpec comment below which should be c
 -    /// @dev the square root of interest rate is z/(x+y) where z is the short amount, x+y is the long0 amount, and y is the long1 amount.
 +    /// @dev the square root of interest rate is sqrt(z/(x+y)) where z is the short amount, x is the long0 amount, and y is the long1 amount.
 ```
+## Return statement on named returns
+Functions with named returns should not have a return statement to avoid unnecessary confusion.
+
+For instance, the following `min()` may be refactored as:
+
+[File: Math.sol#L88-L90](https://github.com/code-423n4/2023-01-timeswap/blob/main/packages/v2-library/src/Math.sol#L88-L90)
+
+```diff
+    function min(uint256 value1, uint256 value2) internal pure returns (uint256 result) {
+-        return value1 < value2 ? value1 : value2;
++        result = value1 < value2 ? value1 : value2;
+    }
+```
+## Use a more recent version of solidity
+The protocol adopts version 0.8.8 on writing contracts. For better security, it is best practice to use the latest Solidity version, 0.8.17.
+
+Security fix list in the versions can be found in the link below:
+
+https://github.com/ethereum/solidity/blob/develop/Changelog.md
